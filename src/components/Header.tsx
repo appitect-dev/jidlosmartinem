@@ -69,6 +69,12 @@ export default function Header() {
             >
               BMI test
             </Link>
+            <Link
+              href="/admin"
+              className="text-gray-700 hover:text-green-600 font-medium transition-colors"
+            >
+              Admin
+            </Link>
             <button
               onClick={() => scrollToSection("kontakt")}
               className="text-gray-700 hover:text-green-600 font-medium transition-colors"
@@ -133,6 +139,13 @@ export default function Header() {
                 onClick={() => setIsOpen(false)}
               >
                 BMI kalkulačka
+              </Link>
+              <Link
+                href="/admin"
+                className="block px-4 py-3 text-gray-700 hover:text-green-600 hover:bg-green-50 rounded-lg font-medium transition-colors"
+                onClick={() => setIsOpen(false)}
+              >
+                Admin
               </Link>
               <button
                 onClick={() => scrollToSection("kontakt")}

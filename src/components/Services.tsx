@@ -1,3 +1,5 @@
+'use client';
+
 import { Target, TrendingUp, CheckCircle, Star, Users } from 'lucide-react';
 
 export default function Services() {
@@ -119,7 +121,9 @@ export default function Services() {
                   </ul>
                 </div>
 
-                <button className={`w-full py-4 px-6 rounded-xl font-semibold text-lg transition-all duration-200 ${
+                <button 
+                  onClick={() => window.location.href = `/dotaznik?typ=${service.popular ? 'transformace' : 'jidelnicek'}`}
+                  className={`w-full py-4 px-6 rounded-xl font-semibold text-lg transition-all duration-200 ${
                   isPopular 
                     ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:from-green-600 hover:to-emerald-700 shadow-lg hover:shadow-xl' 
                     : 'bg-gray-900 text-white hover:bg-gray-800'
