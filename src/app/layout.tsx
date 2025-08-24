@@ -1,21 +1,23 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
+import TabTitleChanger from "@/components/TabTitleChanger";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
 });
 
 export const metadata: Metadata = {
-  title: "Jídlo s Martinem - Nutriční poradce",
+  title: "Zhubněte 5 kg za 30 dní - Martin Cidlinský | Výživový poradce",
   description:
-    "Profesionální nutriční poradenství a osobní jídelníčky. Zlepšete své zdraví s nutričním poradcem Martinem.",
+    "Zhubněte 5 kg za 30 dní bez posilovny a počítání kalorií. Rezervujte si konzultaci zdarma s certifikovaným výživovým poradcem Martinem Cidlinským.",
+  icons: {
+    icon: "/favicon.svg",
+    shortcut: "/favicon.svg",
+    apple: "/favicon.svg",
+  },
 };
 
 export default function RootLayout({
@@ -26,8 +28,9 @@ export default function RootLayout({
   return (
     <html lang="cs">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${inter.variable} font-sans antialiased`}
       >
+        <TabTitleChanger />
         {children}
       </body>
     </html>

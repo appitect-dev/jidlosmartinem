@@ -123,10 +123,10 @@ export default function BMICalculator() {
                 Domů
               </Link>
               <Link
-                href="/#sluzby"
+                href="/#konzultace"
                 className="text-gray-700 hover:text-green-600 font-medium transition-colors"
               >
-                Služby
+                Konzultace
               </Link>
               <Link
                 href="/#o-mne"

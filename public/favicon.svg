@@ -1,0 +1,18 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="apple" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#ef4444"/>
+      <stop offset="50%" style="stop-color:#dc2626"/>
+      <stop offset="100%" style="stop-color:#b91c1c"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Apple shape - much larger -->
+  <path d="M16 4c-7 0-12 5-12 12 0 8 12 16 12 16s12-8 12-16c0-7-5-12-12-12z" fill="url(#apple)"/>
+
+  <!-- Apple stem - adjusted position -->
+  <path d="M16 1v6" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round"/>
+
+  <!-- Apple leaf - adjusted position -->
+  <path d="M18 3c2-1.5 4-1.5 5.5 1" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+</svg>

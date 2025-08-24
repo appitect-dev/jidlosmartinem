@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Menu, X, Phone, Award, Star } from "lucide-react";
+import { Menu, X, ArrowRight } from "lucide-react";
+import Image from "next/image";
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
@@ -13,155 +14,103 @@ export default function Header() {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm shadow-sm">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md shadow-lg border-b border-gray-100">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
-          {/* Logo and credentials */}
-          <div className="flex items-center space-x-4">
-            <Link href="/" className="flex items-center space-x-3">
-              <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full flex items-center justify-center">
-                <span className="text-white font-bold text-xl">MC</span>
-              </div>
-              <div>
-                <div className="text-xl font-bold text-gray-900">
-                  Martin Cidlinský
-                </div>
-                <div className="text-sm text-green-600 font-medium">
-                  Nutriční poradce
-                </div>
-              </div>
-            </Link>
-
-            {/* Trust indicators */}
-            <div className="hidden lg:flex items-center space-x-4 ml-6">
-              <div className="flex items-center space-x-1 px-3 py-1 bg-green-50 rounded-full">
-                <Award className="h-4 w-4 text-green-600" />
-                <span className="text-sm font-medium text-green-700">
-                  Certifikovaný
-                </span>
-              </div>
-              <div className="flex items-center space-x-1 px-3 py-1 bg-yellow-50 rounded-full">
-                <Star className="h-4 w-4 text-yellow-500" />
-                <span className="text-sm font-medium text-yellow-700">
-                  4.9/5
-                </span>
-              </div>
+          {/* Enhanced Logo */}
+          <Link href="/" className="flex items-center space-x-4 group">
+            <div className="relative">
+              <Image
+                src="/favicon.svg"
+                alt="Martin Cidlinský Logo"
+                width={32}
+                height={32}
+                className="w-8 h-8 transition-transform group-hover:scale-110 duration-300"
+              />
+              <div className="absolute -inset-2 bg-green-100 rounded-full opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
             </div>
-          </div>
+            <div className="group-hover:translate-x-1 transition-transform duration-300">
+              <div className="text-xl font-black text-gray-900 tracking-tight">Martin Cidlinský</div>
+              <div className="text-sm font-semibold text-green-600 uppercase tracking-wide">Výživový poradce</div>
+            </div>
+          </Link>
 
-          {/* Desktop navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
-            <button
-              onClick={() => scrollToSection("sluzby")}
-              className="text-gray-700 hover:text-green-600 font-medium transition-colors"
-            >
-              Služby
-            </button>
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center space-x-2">
             <button
               onClick={() => scrollToSection("o-mne")}
-              className="text-gray-700 hover:text-green-600 font-medium transition-colors"
+              className="px-4 py-2 text-gray-700 hover:text-green-600 hover:bg-green-50 font-medium transition-all duration-200 rounded-lg relative group"
             >
               O mně
+              <span className="absolute bottom-0 left-1/2 w-0 h-0.5 bg-green-600 group-hover:w-8 group-hover:left-1/2 group-hover:-translate-x-1/2 transition-all duration-300"></span>
             </button>
             <Link
               href="/bmi"
-              className="text-gray-700 hover:text-green-600 font-medium transition-colors"
+              className="px-4 py-2 text-gray-700 hover:text-green-600 hover:bg-green-50 font-medium transition-all duration-200 rounded-lg relative group"
             >
               BMI test
-            </Link>
-            <Link
-              href="/admin"
-              className="text-gray-700 hover:text-green-600 font-medium transition-colors"
-            >
-              Admin
+              <span className="absolute bottom-0 left-1/2 w-0 h-0.5 bg-green-600 group-hover:w-8 group-hover:left-1/2 group-hover:-translate-x-1/2 transition-all duration-300"></span>
             </Link>
             <button
-              onClick={() => scrollToSection("kontakt")}
-              className="text-gray-700 hover:text-green-600 font-medium transition-colors"
+              onClick={() => scrollToSection("konzultace")}
+              className="px-4 py-2 text-gray-700 hover:text-green-600 hover:bg-green-50 font-medium transition-all duration-200 rounded-lg relative group"
             >
-              Kontakt
+              Konzultace
+              <span className="absolute bottom-0 left-1/2 w-0 h-0.5 bg-green-600 group-hover:w-8 group-hover:left-1/2 group-hover:-translate-x-1/2 transition-all duration-300"></span>
             </button>
 
-            {/* CTA phone button */}
-            <a
-              href="tel:+420777123456"
-              className="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition-colors duration-200"
-            >
-              <Phone className="h-4 w-4 mr-2" />
-              777 123 456
-            </a>
+            {/* Enhanced CTA Button */}
+            <div className="ml-6">
+              <a
+                href="/rezervace"
+                className="group inline-flex items-center px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl font-semibold hover:from-green-700 hover:to-emerald-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 hover:scale-105"
+              >
+                Chci rezervaci zdarma
+                <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform duration-300" />
+              </a>
+            </div>
           </nav>
 
           {/* Mobile menu button */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden p-2 text-gray-700 hover:text-green-600 transition-colors"
+            className="md:hidden p-3 text-gray-700 hover:text-green-600 hover:bg-green-50 transition-colors rounded-xl"
           >
             {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
         </div>
 
-        {/* Mobile navigation */}
+        {/* Enhanced Mobile Navigation */}
         {isOpen && (
-          <div className="md:hidden py-4 border-t border-gray-200 bg-white/95 backdrop-blur-sm">
-            <div className="space-y-4">
-              {/* Trust indicators mobile */}
-              <div className="flex items-center justify-center space-x-4 pb-4 border-b border-gray-100">
-                <div className="flex items-center space-x-1 px-3 py-1 bg-green-50 rounded-full">
-                  <Award className="h-4 w-4 text-green-600" />
-                  <span className="text-sm font-medium text-green-700">
-                    Certifikovaný
-                  </span>
-                </div>
-                <div className="flex items-center space-x-1 px-3 py-1 bg-yellow-50 rounded-full">
-                  <Star className="h-4 w-4 text-yellow-500" />
-                  <span className="text-sm font-medium text-yellow-700">
-                    4.9/5 hodnocení
-                  </span>
-                </div>
-              </div>
-
-              <button
-                onClick={() => scrollToSection("sluzby")}
-                className="block w-full text-left px-4 py-3 text-gray-700 hover:text-green-600 hover:bg-green-50 rounded-lg font-medium transition-colors"
-              >
-                Služby
-              </button>
+          <div className="md:hidden py-6 border-t border-gray-100 bg-white/95 backdrop-blur-md">
+            <div className="space-y-2">
               <button
                 onClick={() => scrollToSection("o-mne")}
-                className="block w-full text-left px-4 py-3 text-gray-700 hover:text-green-600 hover:bg-green-50 rounded-lg font-medium transition-colors"
+                className="block w-full text-left py-3 px-4 text-gray-700 hover:text-green-600 hover:bg-green-50 font-medium transition-all duration-200 rounded-lg"
               >
                 O mně
               </button>
               <Link
                 href="/bmi"
-                className="block px-4 py-3 text-gray-700 hover:text-green-600 hover:bg-green-50 rounded-lg font-medium transition-colors"
-                onClick={() => setIsOpen(false)}
+                className="block py-3 px-4 text-gray-700 hover:text-green-600 hover:bg-green-50 font-medium transition-all duration-200 rounded-lg"
               >
-                BMI kalkulačka
-              </Link>
-              <Link
-                href="/admin"
-                className="block px-4 py-3 text-gray-700 hover:text-green-600 hover:bg-green-50 rounded-lg font-medium transition-colors"
-                onClick={() => setIsOpen(false)}
-              >
-                Admin
+                BMI test
               </Link>
               <button
-                onClick={() => scrollToSection("kontakt")}
-                className="block w-full text-left px-4 py-3 text-gray-700 hover:text-green-600 hover:bg-green-50 rounded-lg font-medium transition-colors"
+                onClick={() => scrollToSection("konzultace")}
+                className="block w-full text-left py-3 px-4 text-gray-700 hover:text-green-600 hover:bg-green-50 font-medium transition-all duration-200 rounded-lg"
               >
-                Kontakt
+                Konzultace
               </button>
 
               {/* Mobile CTA */}
-              <div className="px-4 pt-4">
+              <div className="pt-4 mt-4 border-t border-gray-100">
                 <a
-                  href="tel:+420777123456"
-                  className="flex items-center justify-center w-full px-4 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition-colors duration-200"
+                  href="/rezervace"
+                  className="flex items-center justify-center w-full px-6 py-4 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl font-semibold hover:from-green-700 hover:to-emerald-700 transition-all duration-300 shadow-lg group"
                 >
-                  <Phone className="h-5 w-5 mr-2" />
-                  Zavolat: +420 777 123 456
+                  Chci rezervaci zdarma
+                  <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" />
                 </a>
               </div>
             </div>
