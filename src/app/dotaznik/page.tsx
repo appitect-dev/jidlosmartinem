@@ -2,7 +2,7 @@
 
 import {Suspense} from 'react';
 import {useState} from 'react';
-import {useRouter, useSearchParams} from 'next/navigation';
+import {useRouter} from 'next/navigation';
 import {ChevronLeft, ChevronRight, CheckCircle} from 'lucide-react';
 
 interface FormData {
@@ -90,8 +90,6 @@ const sections = [
 // Create a separate component for the form logic that uses useSearchParams
 function DotaznikForm() {
     const router = useRouter();
-    const searchParams = useSearchParams();
-    const serviceType = searchParams.get('typ') || 'jidelnicek'; // 'jidelnicek' nebo 'transformace'
 
     const [currentSection, setCurrentSection] = useState(0);
     const [formData, setFormData] = useState<FormData>({
@@ -131,18 +129,13 @@ function DotaznikForm() {
             const response = await fetch('/api/dotaznik', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({...formData, serviceType})
+                body: JSON.stringify({...formData})
             });
 
             if (response.ok) {
                 const {id} = await response.json();
+                router.push(`/rezervace?dotaznik=${id}`);
 
-                // Přesměrovat podle typu služby
-                if (serviceType === 'jidelnicek') {
-                    router.push(`/platba?typ=jidelnicek&dotaznik=${id}`);
-                } else {
-                    router.push(`/rezervace?dotaznik=${id}`);
-                }
             }
         } catch (error) {
             console.error('Chyba při ukládání dotazníku:', error);
@@ -848,7 +841,7 @@ Den 2:
                             <h4 className="font-semibold text-gray-900 mb-3">ℹ️ Informace</h4>
                             <p className="text-sm text-gray-700">
                                 Po odeslání dotazníku budete přesměrováni
-                                na {serviceType === 'jidelnicek' ? 'platbu za individuální jídelníček' : 'rezervaci bezplatné konzultace'}.
+                                na rezervaci bezplatné konzultace.
                                 Všechny vaše údaje jsou v bezpečí a budou použity pouze pro přípravu vašeho programu.
                             </p>
                         </div>
@@ -1300,7 +1293,7 @@ Den 1:
                         Dotazník klienta – Výživové poradenství
                     </h1>
                     <p className="text-xl text-gray-600">
-                        {serviceType === 'jidelnicek' ? 'Individuální jídelníček' : '30denní transformace'}
+                        30denní transformace
                     </p>
                 </div>
 
