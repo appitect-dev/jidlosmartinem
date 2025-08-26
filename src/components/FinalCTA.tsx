@@ -18,7 +18,7 @@ export default function FinalCTA() {
                     {/* Header */}
                     <div className="space-y-4">
                         <div className="flex items-center justify-center">
-                            <Sparkles className="w-8 h-8 text-yellow-400 mr-3"/>
+                            <Sparkles className="w-8 h-8 text-yellow-400 mr-3 hidden md:block"/>
                             <h2 className="text-4xl lg:text-5xl font-black leading-tight">
                                 <strong>
                                     Udělejte první krok{" "}
@@ -30,7 +30,7 @@ export default function FinalCTA() {
 
                     {/* Main message */}
                     <div
-                        className="bg-white/10 backdrop-blur rounded-2xl p-6 lg:p-8 border border-white/20 max-w-3xl mx-auto">
+                        className="bg-white/10 backdrop-blur rounded-2xl p-4 md:p-6 border border-white/20 max-w-3xl mx-auto">
                         <p className="text-xl lg:text-2xl leading-relaxed">
                             <strong className="text-yellow-400">
                                 Rezervujte si konzultaci zdarma

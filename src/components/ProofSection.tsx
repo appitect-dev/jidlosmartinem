@@ -16,7 +16,7 @@ export default function ProofSection() {
 
                     <div className="space-y-8">
                         <div className="bg-green-100 rounded-xl p-6 border border-green-200">
-                            <p className="text-xl text-gray-800 flex items-center justify-center">
+                            <p className="text-xl text-gray-800 items-center justify-center">
                                 <span className="text-2xl mr-3">👉</span>
                                 Můj přístup už pomohl&nbsp;<strong className="text-green-700">desítkám lidí</strong>,
                                 kteří řešili přesně to, co vy.
@@ -25,13 +25,13 @@ export default function ProofSection() {
 
                         <div className="grid md:grid-cols-1 gap-6 max-w-3xl mx-auto">
                             <div
-                                className="bg-white rounded-xl p-6 shadow-sm border-l-4 border-green-400 hover:shadow-md transition-shadow">
-                                <div className="flex items-start space-x-4">
+                                className="bg-white rounded-xl p-4 md:p-6 shadow-sm border-l-4 border-green-400 hover:shadow-md transition-shadow">
+                                <div className="flex items-center space-x-4">
                                     <div
-                                        className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                        className="w-12 h-12 bg-green-100 rounded-full hidden md:flex items-center justify-center flex-shrink-0">
                                         <TrendingDown className="w-6 h-6 text-green-600"/>
                                     </div>
-                                    <div>
+                                    <div className="text-start items-start flex flex-col">
                                         <div className="flex items-center mb-2">
                                             <h3 className="text-lg font-bold text-gray-900 mr-3">Lenka, 37 let</h3>
                                             <span
@@ -46,13 +46,13 @@ export default function ProofSection() {
                             </div>
 
                             <div
-                                className="bg-white rounded-xl p-6 shadow-sm border-l-4 border-green-400 hover:shadow-md transition-shadow">
-                                <div className="flex items-start space-x-4">
+                                className="bg-white rounded-xl p-4 md:p-6 shadow-sm border-l-4 border-green-400 hover:shadow-md transition-shadow">
+                                <div className="flex items-center space-x-4">
                                     <div
-                                        className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                        className="w-12 h-12 bg-green-100 rounded-full hidden md:flex items-center justify-center flex-shrink-0">
                                         <TrendingDown className="w-6 h-6 text-green-600"/>
                                     </div>
-                                    <div>
+                                    <div className="text-start items-start flex flex-col">
                                         <div className="flex items-center mb-2">
                                             <h3 className="text-lg font-bold text-gray-900 mr-3">Petr, 42 let</h3>
                                             <span
@@ -67,13 +67,13 @@ export default function ProofSection() {
                             </div>
 
                             <div
-                                className="bg-white rounded-xl p-6 shadow-sm border-l-4 border-green-400 hover:shadow-md transition-shadow">
-                                <div className="flex items-start space-x-4">
+                                className="bg-white rounded-xl p-4 md:p-6 shadow-sm border-l-4 border-green-400 hover:shadow-md transition-shadow items-center">
+                                <div className="flex items-center space-x-4">
                                     <div
-                                        className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                        className="w-12 h-12 bg-green-100 rounded-full hidden md:flex items-center justify-center flex-shrink-0">
                                         <Star className="w-6 h-6 text-green-600"/>
                                     </div>
-                                    <div>
+                                    <div className="text-start items-start flex flex-col">
                                         <div className="flex items-center mb-2">
                                             <h3 className="text-lg font-bold text-gray-900 mr-3">Monika, 29 let</h3>
                                             <span

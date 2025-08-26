@@ -17,10 +17,10 @@ export default function FAQSection() {
                     <div className="space-y-6 max-w-3xl mx-auto">
                         {/* Question 1 */}
                         <div
-                            className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+                            className="bg-white rounded-xl p-4 md:p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
                             <div className="flex items-center justify-center mb-6">
                                 <div
-                                    className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+                                    className="w-12 h-12 bg-green-100 rounded-full hidden md:flex items-center justify-center mr-4 flex-shrink-0">
                                     <DollarSign className="w-6 h-6 text-green-600"/>
                                 </div>
                                 <h3 className="text-2xl font-black text-gray-900">
@@ -42,10 +42,10 @@ export default function FAQSection() {
 
                         {/* Question 2 */}
                         <div
-                            className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+                            className="bg-white rounded-xl p-4 md:p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
                             <div className="flex items-center justify-center mb-6">
                                 <div
-                                    className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+                                    className="w-12 h-12 bg-blue-100 rounded-full hidden md:flex items-center justify-center mr-4 flex-shrink-0">
                                     <Dumbbell className="w-6 h-6 text-blue-600"/>
                                 </div>
                                 <h3 className="text-2xl font-black text-gray-900">
@@ -64,10 +64,10 @@ export default function FAQSection() {
 
                         {/* Question 3 */}
                         <div
-                            className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+                            className="bg-white rounded-xl p-4 md:p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
                             <div className="flex items-center justify-center mb-6">
                                 <div
-                                    className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+                                    className="w-12 h-12 bg-orange-100 rounded-full hidden md:flex items-center justify-center mr-4 flex-shrink-0">
                                     <UtensilsCrossed className="w-6 h-6 text-orange-600"/>
                                 </div>
                                 <h3 className="text-2xl font-black text-gray-900">
