@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Menu, X, ArrowRight } from "lucide-react";
-import Image from "next/image";
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
@@ -20,13 +19,7 @@ export default function Header() {
           {/* Enhanced Logo */}
           <Link href="/" className="flex items-center space-x-4 group">
             <div className="relative">
-              <Image
-                src="/favicon.svg"
-                alt="Martin Cidlinský Logo"
-                width={32}
-                height={32}
-                className="w-8 h-8 transition-transform group-hover:scale-110 duration-300"
-              />
+              <span className="text-3xl transition-transform group-hover:scale-110 duration-300">🍏</span>
               <div className="absolute -inset-2 bg-green-100 rounded-full opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
             </div>
             <div className="group-hover:translate-x-1 transition-transform duration-300">

@@ -14,9 +14,9 @@ export const metadata: Metadata = {
   description:
     "Zhubněte 5 kg za 30 dní bez posilovny a počítání kalorií. Rezervujte si konzultaci zdarma s certifikovaným výživovým poradcem Martinem Cidlinským.",
   icons: {
-    icon: "/favicon.svg",
-    shortcut: "/favicon.svg",
-    apple: "/favicon.svg",
+    icon: "/apple-favicon.svg",
+    shortcut: "/apple-favicon.svg",
+    apple: "/apple-favicon.svg",
   },
 };
 

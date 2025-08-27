@@ -1,5 +1,5 @@
-import { Resend } from 'resend';
-import { prisma } from '@/lib/prisma';
+import {Resend} from 'resend';
+import {prisma} from '@/lib/prisma';
 
 // Get the type from Prisma client
 type DotaznikType = Awaited<ReturnType<typeof prisma.dotaznik.findFirst>>;
@@ -8,102 +8,102 @@ type DotaznikType = Awaited<ReturnType<typeof prisma.dotaznik.findFirst>>;
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export interface EmailData {
-  to: string;
-  subject: string;
-  html: string;
-  from?: string;
+    to: string;
+    subject: string;
+    html: string;
+    from?: string;
 }
 
 export interface DotaznikEmailData {
-  inviteeName: string;
-  inviteeEmail: string;
-  eventStartTime: string;
-  eventName: string;
-  sessionId: string;
-  dotaznikData: NonNullable<DotaznikType>;
+    inviteeName: string;
+    inviteeEmail: string;
+    eventStartTime: string;
+    eventName: string;
+    sessionId: string;
+    dotaznikData: NonNullable<DotaznikType>;
 }
 
 /**
  * Send a generic email using Resend
  */
-export async function sendEmail({ to, subject, html, from = 'info@jidlosmartinem.cz' }: EmailData) {
-  try {
-    if (!process.env.RESEND_API_KEY) {
-      throw new Error('RESEND_API_KEY is not configured');
+export async function sendEmail({to, subject, html, from = 'info@jidlosmartinem.cz'}: EmailData) {
+    try {
+        if (!process.env.RESEND_API_KEY) {
+            throw new Error('RESEND_API_KEY is not configured');
+        }
+
+        const result = await resend.emails.send({
+            from,
+            to,
+            subject,
+            html,
+        });
+
+        console.log('Email sent successfully:', result);
+        return {success: true, id: result.data?.id};
+    } catch (error) {
+        console.error('Failed to send email:', error);
+        return {success: false, error: error instanceof Error ? error.message : 'Unknown error'};
     }
-
-    const result = await resend.emails.send({
-      from,
-      to,
-      subject,
-      html,
-    });
-
-    console.log('Email sent successfully:', result);
-    return { success: true, id: result.data?.id };
-  } catch (error) {
-    console.error('Failed to send email:', error);
-    return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
-  }
 }
 
 /**
  * Send notification email about new consultation booking with dotaznik data
  */
 export async function sendBookingNotificationEmail({
-  inviteeName,
-  inviteeEmail,
-  eventStartTime,
-  eventName,
-  sessionId,
-  dotaznikData
-}: DotaznikEmailData) {
-  const subject = `Nová rezervace konzultace - ${inviteeName}`;
-  
-  const html = generateBookingEmailHTML({
-    inviteeName,
-    inviteeEmail,
-    eventStartTime,
-    eventName,
-    sessionId,
-    dotaznikData
-  });
+                                                       inviteeName,
+                                                       inviteeEmail,
+                                                       eventStartTime,
+                                                       eventName,
+                                                       sessionId,
+                                                       dotaznikData
+                                                   }: DotaznikEmailData) {
+    const subject = `Nová rezervace konzultace - ${inviteeName}`;
 
-  // Send only to Vandl
-  const result = await sendEmail({
-    to: 'jan.vandlicek@appitect.eu',
-    subject,
-    html,
-    from: 'info@jidlosmartinem.cz'
-  });
+    const html = generateBookingEmailHTML({
+        inviteeName,
+        inviteeEmail,
+        eventStartTime,
+        eventName,
+        sessionId,
+        dotaznikData
+    });
 
-  console.log('Booking notification sent to Vandl:', result);
-  return result;
+    // Send only to Vandl
+    const result = await sendEmail({
+        to: 'adam.bardzak@appitect.eu',
+        subject,
+        html,
+        from: 'info@jidlosmartinem.cz'
+    });
+
+    console.log('Booking notification sent to Vandl:', result);
+    return result;
 }
 
 /**
  * Generate HTML content for booking notification email
  */
 function generateBookingEmailHTML({
-  inviteeName,
-  inviteeEmail,
-  eventStartTime,
-  eventName,
-  sessionId,
-  dotaznikData
-}: DotaznikEmailData): string {
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleString('cs-CZ', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  };
+                                      inviteeName,
+                                      inviteeEmail,
+                                      eventStartTime,
+                                      eventName,
+                                      sessionId,
+                                      dotaznikData
+                                  }: DotaznikEmailData): string {
+    const formatDate = (dateString: string) => {
+        return new Date(dateString).toLocaleString('cs-CZ', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    };
 
-  return `
+    return `
     <!DOCTYPE html>
     <html lang="cs">
     <head>
@@ -195,19 +195,19 @@ function generateBookingEmailHTML({
  * Send welcome email to client after booking
  */
 export async function sendWelcomeEmail(inviteeName: string, inviteeEmail: string, eventStartTime: string) {
-  const subject = `Potvrzení rezervace konzultace - ${inviteeName}`;
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleString('cs-CZ', {
-      weekday: 'long',
-      year: 'numeric', 
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  };
+    const subject = `Potvrzení rezervace konzultace - ${inviteeName}`;
+    const formatDate = (dateString: string) => {
+        return new Date(dateString).toLocaleString('cs-CZ', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    };
 
-  const html = `
+    const html = `
     <!DOCTYPE html>
     <html lang="cs">
     <head>
@@ -263,50 +263,50 @@ export async function sendWelcomeEmail(inviteeName: string, inviteeEmail: string
     </html>
   `;
 
-  return await sendEmail({
-    to: inviteeEmail,
-    subject,
-    html,
-    from: 'info@jidlosmartinem.cz'
-  });
+    return await sendEmail({
+        to: inviteeEmail,
+        subject,
+        html,
+        from: 'info@jidlosmartinem.cz'
+    });
 }
 
 /**
  * Send notification email to Vandl only
  */
 export async function sendTeamNotificationEmail(subject: string, html: string) {
-  // Send only to Vandl
-  const result = await sendEmail({
-    to: 'jan.vandlicek@appitect.eu',
-    subject: `[Jídlo s Martinem] ${subject}`,
-    html,
-    from: 'info@jidlosmartinem.cz'
-  });
+    // Send only to Vandl
+    const result = await sendEmail({
+        to: 'adam.bardzak@appitect.eu',
+        subject: `[Jídlo s Martinem] ${subject}`,
+        html,
+        from: 'info@jidlosmartinem.cz'
+    });
 
-  console.log('Team notification sent to Vandl:', result);
-  return [result];
+    console.log('Team notification sent to Vandl:', result);
+    return [result];
 }
 
 /**
  * Send form submission notification to the team
  */
 export async function sendFormSubmissionNotification(clientName: string, clientEmail: string, sessionId: string) {
-  const subject = `Nový dotazník vyplněn - ${clientName}`;
-  
-  // Fetch the complete form data from database using sessionId
-  const dotaznikData = await prisma.dotaznik.findFirst({
-    where: { sessionId: sessionId }
-  });
+    const subject = `Nový dotazník vyplněn - ${clientName}`;
 
-  if (!dotaznikData) {
-    console.error(`No dotaznik data found for sessionId: ${sessionId}`);
-    return await sendTeamNotificationEmail(subject, `
+    // Fetch the complete form data from database using sessionId
+    const dotaznikData = await prisma.dotaznik.findFirst({
+        where: {sessionId: sessionId}
+    });
+
+    if (!dotaznikData) {
+        console.error(`No dotaznik data found for sessionId: ${sessionId}`);
+        return await sendTeamNotificationEmail(subject, `
       <p>Nebyla nalezena data dotazníku pro Session ID: ${sessionId}</p>
       <p>Klient: ${clientName} (${clientEmail})</p>
     `);
-  }
-  
-  const html = `
+    }
+
+    const html = `
     <!DOCTYPE html>
     <html lang="cs">
     <head>
@@ -439,5 +439,5 @@ export async function sendFormSubmissionNotification(clientName: string, clientE
     </html>
   `;
 
-  return await sendTeamNotificationEmail(subject, html);
+    return await sendTeamNotificationEmail(subject, html);
 }
