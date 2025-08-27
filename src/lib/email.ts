@@ -69,37 +69,16 @@ export async function sendBookingNotificationEmail({
     dotaznikData
   });
 
-  // Prepare email recipients - hardcoded team emails
-  const recipients: string[] = [
-    'info@jidlosmartinem.cz',        // Martin
-    'adam.bardzak@appitect.eu',      // Adam  
-    'jan.vandlicek@appitect.eu'      // Vandl
-  ];
-
-  // Send to all recipients
-  const results = await Promise.allSettled(
-    recipients.map(recipient => 
-      sendEmail({
-        to: recipient,
-        subject,
-        html,
-        from: 'info@jidlosmartinem.cz'
-      })
-    )
-  );
-
-  // Log results
-  results.forEach((result, index) => {
-    if (result.status === 'fulfilled') {
-      console.log(`Email sent successfully to ${recipients[index]}`);
-    } else {
-      console.error(`Failed to send email to ${recipients[index]}:`, result.reason);
-    }
+  // Send only to Vandl
+  const result = await sendEmail({
+    to: 'jan.vandlicek@appitect.eu',
+    subject,
+    html,
+    from: 'info@jidlosmartinem.cz'
   });
 
-  // Return the first result (Martin's email) for backward compatibility
-  const martinResult = results[0];
-  return martinResult.status === 'fulfilled' ? martinResult.value : { success: false, error: 'Failed to send to Martin' };
+  console.log('Booking notification sent to Vandl:', result);
+  return result;
 }
 
 /**
@@ -293,37 +272,19 @@ export async function sendWelcomeEmail(inviteeName: string, inviteeEmail: string
 }
 
 /**
- * Send notification email to the entire team (Martin, Adam, Vandl)
+ * Send notification email to Vandl only
  */
 export async function sendTeamNotificationEmail(subject: string, html: string) {
-  // Hardcoded team emails for reliability
-  const recipients: string[] = [
-    'info@jidlosmartinem.cz',        // Martin
-    'adam.bardzak@appitect.eu',      // Adam
-    'jan.vandlicek@appitect.eu'      // Vandl
-  ];
-
-  const results = await Promise.allSettled(
-    recipients.map(recipient => 
-      sendEmail({
-        to: recipient,
-        subject: `[Jídlo s Martinem] ${subject}`,
-        html,
-        from: 'info@jidlosmartinem.cz'
-      })
-    )
-  );
-
-  // Log results
-  results.forEach((result, index) => {
-    if (result.status === 'fulfilled') {
-      console.log(`Team notification sent successfully to ${recipients[index]}`);
-    } else {
-      console.error(`Failed to send team notification to ${recipients[index]}:`, result.reason);
-    }
+  // Send only to Vandl
+  const result = await sendEmail({
+    to: 'jan.vandlicek@appitect.eu',
+    subject: `[Jídlo s Martinem] ${subject}`,
+    html,
+    from: 'info@jidlosmartinem.cz'
   });
 
-  return results;
+  console.log('Team notification sent to Vandl:', result);
+  return [result];
 }
 
 /**
