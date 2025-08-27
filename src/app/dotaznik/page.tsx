@@ -125,6 +125,8 @@ function DotaznikForm() {
 
     const handleSubmit = async () => {
         try {
+            console.log('Submitting dotaznik form...');
+            
             // Uložit data dotazníku
             const response = await fetch('/api/dotaznik', {
                 method: 'POST',
@@ -133,12 +135,22 @@ function DotaznikForm() {
             });
 
             if (response.ok) {
-                const {id} = await response.json();
-                router.push(`/rezervace?dotaznik=${id}`);
-
+                const result = await response.json();
+                console.log('Dotaznik submitted successfully:', result);
+                
+                // Redirect to rezervace page with sessionId parameter
+                router.push(`/rezervace?sessionId=${result.sessionId}`);
+            } else {
+                // Handle API errors
+                const errorData = await response.json();
+                console.error('Error submitting dotaznik:', errorData);
+                
+                // You could show an error message to the user here
+                alert(`Chyba při ukládání dotazníku: ${errorData.message || 'Neznámá chyba'}`);
             }
         } catch (error) {
             console.error('Chyba při ukládání dotazníku:', error);
+            alert('Nepodařilo se uložit dotazník. Zkuste to prosím znovu.');
         }
     };
 
