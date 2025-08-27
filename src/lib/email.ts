@@ -26,7 +26,7 @@ export interface DotaznikEmailData {
 /**
  * Send a generic email using Resend
  */
-export async function sendEmail({ to, subject, html, from = 'martin@jidlosmartinem.cz' }: EmailData) {
+export async function sendEmail({ to, subject, html, from = 'info@jidlosmartinem.cz' }: EmailData) {
   try {
     if (!process.env.RESEND_API_KEY) {
       throw new Error('RESEND_API_KEY is not configured');
@@ -83,7 +83,7 @@ export async function sendBookingNotificationEmail({
         to: recipient,
         subject,
         html,
-        from: 'rezervace@jidlosmartinem.cz'
+        from: 'info@jidlosmartinem.cz'
       })
     )
   );
@@ -288,7 +288,7 @@ export async function sendWelcomeEmail(inviteeName: string, inviteeEmail: string
     to: inviteeEmail,
     subject,
     html,
-    from: 'martin@jidlosmartinem.cz'
+    from: 'info@jidlosmartinem.cz'
   });
 }
 
@@ -308,7 +308,7 @@ export async function sendTeamNotificationEmail(subject: string, html: string) {
         to: recipient,
         subject: `[Jídlo s Martinem] ${subject}`,
         html,
-        from: 'system@jidlosmartinem.cz'
+        from: 'info@jidlosmartinem.cz'
       })
     )
   );

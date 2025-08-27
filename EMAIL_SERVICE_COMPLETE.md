@@ -55,7 +55,7 @@ Calendly Booking → Welcome Email to Client + Notification to Martin
 
 Your `.env.local` is properly configured:
 ```env
-RESEND_API_KEY="re_TfD5ao9Z_Gvo3JNkJjc6f1reJKssm6vEf"
+key
 MARTIN_EMAIL="martin@example.com"
 ```
 

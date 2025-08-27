@@ -92,6 +92,7 @@ function DotaznikForm() {
     const router = useRouter();
 
     const [currentSection, setCurrentSection] = useState(0);
+    const [errors, setErrors] = useState<Record<string, string>>({});
     const [formData, setFormData] = useState<FormData>({
         jmeno: '', vek: '', vyska: '', hmotnost: '', pohlavi: '', email: '', telefon: '',
         hlavniCil: '', vedlejsiCile: '', terminalCile: '',
@@ -105,11 +106,51 @@ function DotaznikForm() {
         duvodPoradenstvi: '', ocekavani: '', pripravenost: '', prekazy: ''
     });
 
+    // Define required fields for each section
+    const requiredFields = {
+        zakladni: ['jmeno', 'email', 'vek', 'vyska', 'hmotnost', 'pohlavi'],
+        cil: ['hlavniCil'],
+        motivace: ['duvodPoradenstvi', 'ocekavani']
+    };
+
     const handleInputChange = (field: keyof FormData, value: string) => {
         setFormData(prev => ({...prev, [field]: value}));
+        // Clear error when user starts typing
+        if (errors[field]) {
+            setErrors(prev => ({...prev, [field]: ''}));
+        }
+    };
+
+    const validateSection = (sectionId: string): boolean => {
+        const newErrors: Record<string, string> = {};
+        const fieldsToValidate = requiredFields[sectionId as keyof typeof requiredFields] || [];
+        
+        fieldsToValidate.forEach(field => {
+            if (!formData[field as keyof FormData].trim()) {
+                newErrors[field] = 'Toto pole je povinné';
+            }
+        });
+
+        // Email validation
+        if (sectionId === 'zakladni' && formData.email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(formData.email)) {
+                newErrors.email = 'Zadejte platnou emailovou adresu';
+            }
+        }
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
     };
 
     const handleNext = () => {
+        const currentSectionId = sections[currentSection].id;
+        
+        // Validate current section before moving forward
+        if (!validateSection(currentSectionId)) {
+            return; // Stop if validation fails
+        }
+
         if (currentSection < sections.length - 1) {
             setCurrentSection(currentSection + 1);
         } else {
@@ -121,6 +162,95 @@ function DotaznikForm() {
         if (currentSection > 0) {
             setCurrentSection(currentSection - 1);
         }
+    };
+
+    // Helper function to render input with error handling
+    const renderInputField = (
+        field: keyof FormData,
+        label: string,
+        type: 'text' | 'email' | 'number' = 'text',
+        required: boolean = false,
+        placeholder?: string
+    ) => {
+        const hasError = !!errors[field];
+        return (
+            <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                    {label} {required && <span className="text-red-500">*</span>}
+                </label>
+                <input
+                    type={type}
+                    value={formData[field]}
+                    onChange={(e) => handleInputChange(field, e.target.value)}
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-gray-900 bg-white ${
+                        hasError ? 'border-red-500 bg-red-50' : 'border-gray-300'
+                    }`}
+                    placeholder={placeholder}
+                    required={required}
+                />
+                {hasError && <p className="mt-1 text-sm text-red-600">{errors[field]}</p>}
+            </div>
+        );
+    };
+
+    // Helper function to render select field with error handling
+    const renderSelectField = (
+        field: keyof FormData,
+        label: string,
+        options: { value: string; label: string }[],
+        required: boolean = false
+    ) => {
+        const hasError = !!errors[field];
+        return (
+            <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                    {label} {required && <span className="text-red-500">*</span>}
+                </label>
+                <select
+                    value={formData[field]}
+                    onChange={(e) => handleInputChange(field, e.target.value)}
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-gray-900 bg-white ${
+                        hasError ? 'border-red-500 bg-red-50' : 'border-gray-300'
+                    }`}
+                    required={required}
+                >
+                    <option value="">Vyberte možnost</option>
+                    {options.map(option => (
+                        <option key={option.value} value={option.value}>{option.label}</option>
+                    ))}
+                </select>
+                {hasError && <p className="mt-1 text-sm text-red-600">{errors[field]}</p>}
+            </div>
+        );
+    };
+
+    // Helper function to render textarea with error handling
+    const renderTextareaField = (
+        field: keyof FormData,
+        label: string,
+        rows: number = 3,
+        required: boolean = false,
+        placeholder?: string
+    ) => {
+        const hasError = !!errors[field];
+        return (
+            <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                    {label} {required && <span className="text-red-500">*</span>}
+                </label>
+                <textarea
+                    value={formData[field]}
+                    onChange={(e) => handleInputChange(field, e.target.value)}
+                    rows={rows}
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-gray-900 bg-white ${
+                        hasError ? 'border-red-500 bg-red-50' : 'border-gray-300'
+                    }`}
+                    placeholder={placeholder}
+                    required={required}
+                />
+                {hasError && <p className="mt-1 text-sm text-red-600">{errors[field]}</p>}
+            </div>
+        );
     };
 
     const handleSubmit = async () => {
@@ -163,79 +293,18 @@ function DotaznikForm() {
                     <div className="space-y-6">
                         <h3 className="text-2xl font-bold text-gray-900 mb-6">👤 Základní údaje</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Jméno a příjmení
-                                    *</label>
-                                <input
-                                    type="text"
-                                    value={formData.jmeno}
-                                    onChange={(e) => handleInputChange('jmeno', e.target.value)}
-                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-gray-900 bg-white"
-                                    required
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Věk *</label>
-                                <input
-                                    type="number"
-                                    value={formData.vek}
-                                    onChange={(e) => handleInputChange('vek', e.target.value)}
-                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-gray-900 bg-white"
-                                    required
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Výška (cm) *</label>
-                                <input
-                                    type="number"
-                                    value={formData.vyska}
-                                    onChange={(e) => handleInputChange('vyska', e.target.value)}
-                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-gray-900 bg-white"
-                                    required
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Hmotnost (kg) *</label>
-                                <input
-                                    type="number"
-                                    value={formData.hmotnost}
-                                    onChange={(e) => handleInputChange('hmotnost', e.target.value)}
-                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-gray-900 bg-white"
-                                    required
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Pohlaví *</label>
-                                <select
-                                    value={formData.pohlavi}
-                                    onChange={(e) => handleInputChange('pohlavi', e.target.value)}
-                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-gray-900 bg-white"
-                                    required
-                                >
-                                    <option value="">Vyberte pohlaví</option>
-                                    <option value="muž">Muž</option>
-                                    <option value="žena">Žena</option>
-                                    <option value="jiné">Jiné</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">E-mail *</label>
-                                <input
-                                    type="email"
-                                    value={formData.email}
-                                    onChange={(e) => handleInputChange('email', e.target.value)}
-                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-gray-900 bg-white"
-                                    required
-                                />
-                            </div>
+                            {renderInputField('jmeno', 'Jméno a příjmení', 'text', true)}
+                            {renderInputField('vek', 'Věk', 'number', true)}
+                            {renderInputField('vyska', 'Výška (cm)', 'number', true)}
+                            {renderInputField('hmotnost', 'Hmotnost (kg)', 'number', true)}
+                            {renderSelectField('pohlavi', 'Pohlaví', [
+                                { value: 'muž', label: 'Muž' },
+                                { value: 'žena', label: 'Žena' },
+                                { value: 'jiné', label: 'Jiné' }
+                            ], true)}
+                            {renderInputField('email', 'E-mail', 'email', true)}
                             <div className="md:col-span-2">
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Telefon</label>
-                                <input
-                                    type="tel"
-                                    value={formData.telefon}
-                                    onChange={(e) => handleInputChange('telefon', e.target.value)}
-                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-gray-900 bg-white"
-                                />
+                                {renderInputField('telefon', 'Telefon', 'text', false, '+420 123 456 789')}
                             </div>
                         </div>
                     </div>
@@ -245,37 +314,9 @@ function DotaznikForm() {
                 return (
                     <div className="space-y-6">
                         <h3 className="text-2xl font-bold text-gray-900 mb-6">🎯 Cíl klienta</h3>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Jaký je váš hlavní cíl?
-                                *</label>
-                            <textarea
-                                value={formData.hlavniCil}
-                                onChange={(e) => handleInputChange('hlavniCil', e.target.value)}
-                                rows={3}
-                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-gray-900 bg-white"
-                                required
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Máte vedlejší cíle?</label>
-                            <textarea
-                                value={formData.vedlejsiCile}
-                                onChange={(e) => handleInputChange('vedlejsiCile', e.target.value)}
-                                rows={3}
-                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-gray-900 bg-white"
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Do kdy byste chtěli výsledků
-                                dosáhnout?</label>
-                            <input
-                                type="text"
-                                value={formData.terminalCile}
-                                onChange={(e) => handleInputChange('terminalCile', e.target.value)}
-                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-gray-900 bg-white"
-                                placeholder="např. do 3 měsíců, do léta..."
-                            />
-                        </div>
+                        {renderTextareaField('hlavniCil', 'Jaký je váš hlavní cíl?', 3, true, 'Popište váš hlavní cíl...')}
+                        {renderTextareaField('vedlejsiCile', 'Máte vedlejší cíle?', 3, false, 'Další cíle, které chcete dosáhnout...')}
+                        {renderInputField('terminalCile', 'Do kdy byste chtěli výsledků dosáhnout?', 'text', false, 'např. do 3 měsíců, do léta...')}
                     </div>
                 );
 
@@ -734,57 +775,15 @@ Den 2:
                 return (
                     <div className="space-y-6">
                         <h3 className="text-2xl font-bold text-gray-900 mb-6">💪 Motivace a očekávání</h3>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Proč jste se rozhodli pro
-                                výživové poradenství právě teď?</label>
-                            <textarea
-                                value={formData.duvodPoradenstvi}
-                                onChange={(e) => handleInputChange('duvodPoradenstvi', e.target.value)}
-                                rows={4}
-                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-gray-900 bg-white"
-                                placeholder="Co vás motivovalo k tomuto kroku..."
-                                required
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Co očekáváte ode mě jako
-                                poradce?</label>
-                            <textarea
-                                value={formData.ocekavani}
-                                onChange={(e) => handleInputChange('ocekavani', e.target.value)}
-                                rows={4}
-                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-gray-900 bg-white"
-                                placeholder="Vaše očekávání a požadavky..."
-                                required
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Jak moc jste připraveni
-                                udělat změnu? (0–10)</label>
-                            <select
-                                value={formData.pripravenost}
-                                onChange={(e) => handleInputChange('pripravenost', e.target.value)}
-                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-gray-900 bg-white"
-                                required
-                            >
-                                <option value="">Vyberte úroveň</option>
-                                {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(num => (
-                                    <option key={num}
-                                            value={num.toString()}>{num} {num <= 3 ? '(nízká)' : num <= 6 ? '(střední)' : '(vysoká)'}</option>
-                                ))}
-                            </select>
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Co by vás mohlo během
-                                procesu brzdit?</label>
-                            <textarea
-                                value={formData.prekazy}
-                                onChange={(e) => handleInputChange('prekazy', e.target.value)}
-                                rows={4}
-                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-gray-900 bg-white"
-                                placeholder="Časové omezení, rodinné situace, cestování..."
-                            />
-                        </div>
+                        {renderTextareaField('duvodPoradenstvi', 'Proč jste se rozhodli pro výživové poradenství právě teď?', 4, true, 'Co vás motivovalo k tomuto kroku...')}
+                        {renderTextareaField('ocekavani', 'Co očekáváte ode mě jako poradce?', 4, true, 'Vaše očekávání a požadavky...')}
+                        {renderSelectField('pripravenost', 'Jak moc jste připraveni udělat změnu? (0–10)', [
+                            ...Array.from({length: 11}, (_, i) => ({
+                                value: i.toString(),
+                                label: `${i} ${i <= 3 ? '(nízká)' : i <= 6 ? '(střední)' : '(vysoká)'}`
+                            }))
+                        ], false)}
+                        {renderTextareaField('prekazy', 'Co by vás mohlo během procesu brzdit?', 4, false, 'Časové omezení, rodinné situace, cestování...')}
                     </div>
                 );
 
@@ -801,7 +800,7 @@ Den 2:
                             {/* Základní údaje */}
                             <div className="bg-gray-50 p-6 rounded-lg">
                                 <h4 className="font-semibold text-gray-900 mb-3">👤 Základní údaje</h4>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-900">
                                     <div><strong>Jméno:</strong> {formData.jmeno}</div>
                                     <div><strong>Věk:</strong> {formData.vek} let</div>
                                     <div><strong>Výška:</strong> {formData.vyska} cm</div>
@@ -814,7 +813,7 @@ Den 2:
                             {/* Cíl */}
                             <div className="bg-gray-50 p-6 rounded-lg">
                                 <h4 className="font-semibold text-gray-900 mb-3">🎯 Váš cíl</h4>
-                                <div className="text-sm space-y-2">
+                                <div className="text-sm space-y-2 text-gray-900">
                                     <div><strong>Hlavní cíl:</strong> {formData.hlavniCil}</div>
                                     {formData.vedlejsiCile &&
                                         <div><strong>Vedlejší cíle:</strong> {formData.vedlejsiCile}</div>}
@@ -826,7 +825,7 @@ Den 2:
                             {/* Motivace */}
                             <div className="bg-gray-50 p-6 rounded-lg">
                                 <h4 className="font-semibold text-gray-900 mb-3">💪 Motivace</h4>
-                                <div className="text-sm space-y-2">
+                                <div className="text-sm space-y-2 text-gray-900">
                                     <div><strong>Důvod pro poradenství:</strong> {formData.duvodPoradenstvi}</div>
                                     <div><strong>Očekávání:</strong> {formData.ocekavani}</div>
                                     <div><strong>Připravenost na změnu:</strong> {formData.pripravenost}/10</div>
@@ -838,7 +837,7 @@ Den 2:
                                 <div className="bg-red-50 p-6 rounded-lg">
                                     <h4 className="font-semibold text-gray-900 mb-3">⚠️ Důležité zdravotní
                                         informace</h4>
-                                    <div className="text-sm space-y-2">
+                                    <div className="text-sm space-y-2 text-gray-900">
                                         {formData.alergie &&
                                             <div><strong>Alergie/intolerance:</strong> {formData.alergie}</div>}
                                         {formData.zdravotniDiagnozy &&

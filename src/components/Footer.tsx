@@ -107,7 +107,7 @@ export default function Footer() {
                             href="/rezervace"
                             className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg font-semibold hover:from-green-700 hover:to-emerald-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
                         >
-                            Chci rezervaci zdarma
+                            Chci konzultaci zdarma
                         </a>
 
                         {/* Trust Indicators */}

@@ -65,7 +65,7 @@ export default function Header() {
                 href="/rezervace"
                 className="group inline-flex items-center px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl font-semibold hover:from-green-700 hover:to-emerald-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 hover:scale-105"
               >
-                Chci rezervaci zdarma
+                Chci konzultaci zdarma
                 <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform duration-300" />
               </a>
             </div>
@@ -109,7 +109,7 @@ export default function Header() {
                   href="/rezervace"
                   className="flex items-center justify-center w-full px-6 py-4 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl font-semibold hover:from-green-700 hover:to-emerald-700 transition-all duration-300 shadow-lg group"
                 >
-                  Chci rezervaci zdarma
+                  Chci konzultaci zdarma
                   <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" />
                 </a>
               </div>
