@@ -293,6 +293,19 @@ export async function sendTeamNotificationEmail(subject: string, html: string) {
 export async function sendFormSubmissionNotification(clientName: string, clientEmail: string, sessionId: string) {
   const subject = `Nový dotazník vyplněn - ${clientName}`;
   
+  // Fetch the complete form data from database using sessionId
+  const dotaznikData = await prisma.dotaznik.findFirst({
+    where: { sessionId: sessionId }
+  });
+
+  if (!dotaznikData) {
+    console.error(`No dotaznik data found for sessionId: ${sessionId}`);
+    return await sendTeamNotificationEmail(subject, `
+      <p>Nebyla nalezena data dotazníku pro Session ID: ${sessionId}</p>
+      <p>Klient: ${clientName} (${clientEmail})</p>
+    `);
+  }
+  
   const html = `
     <!DOCTYPE html>
     <html lang="cs">
@@ -301,10 +314,22 @@ export async function sendFormSubmissionNotification(clientName: string, clientE
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>Nový dotazník vyplněn</title>
       <style>
-        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
-        .header { background: #4CAF50; color: white; padding: 20px; border-radius: 8px; text-align: center; }
-        .content { padding: 20px; }
-        .highlight { background: #E8F5E8; padding: 15px; border-radius: 8px; margin: 20px 0; }
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .header { background: #4CAF50; color: white; padding: 20px; border-radius: 8px; text-align: center; margin-bottom: 20px; }
+        .section { margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 8px; }
+        .section h3 { margin-top: 0; color: #4CAF50; }
+        .field { margin-bottom: 10px; }
+        .field strong { color: #2E7D32; }
+        .basic-info { background: #F3E5F5; }
+        .goals { background: #E8F5E8; }
+        .health-info { background: #FFF3E0; }
+        .body-composition { background: #E3F2FD; }
+        .sleep-info { background: #FCE4EC; }
+        .eating-habits { background: #F1F8E9; }
+        .eating-history { background: #FFF8E1; }
+        .psychology { background: #E8EAF6; }
+        .food-diary { background: #EFEBE9; }
+        .motivation { background: #E0F2F1; }
         .footer { text-align: center; margin-top: 30px; padding: 20px; background: #f5f5f5; border-radius: 8px; font-size: 14px; }
       </style>
     </head>
@@ -312,29 +337,103 @@ export async function sendFormSubmissionNotification(clientName: string, clientE
       <div class="header">
         <h1>🥗 Jídlo s Martinem</h1>
         <h2>Nový dotazník vyplněn</h2>
+        <p><strong>Klient:</strong> ${clientName} (${clientEmail})</p>
+        <p><strong>Datum:</strong> ${new Date().toLocaleString('cs-CZ')}</p>
+        <p><strong>Session ID:</strong> ${sessionId}</p>
       </div>
-      
-      <div class="content">
-        <p>Dobrý den,</p>
-        
-        <p>byl vyplněn nový dotazník klientem.</p>
-        
-        <div class="highlight">
-          <h3>📋 Informace o klientovi:</h3>
-          <p><strong>Jméno:</strong> ${clientName}</p>
-          <p><strong>Email:</strong> ${clientEmail}</p>
-          <p><strong>Session ID:</strong> ${sessionId}</p>
-          <p><strong>Datum:</strong> ${new Date().toLocaleString('cs-CZ')}</p>
-        </div>
-        
-        <p>Klient obdrží potvrzovací email a bude přesměrován na rezervaci konzultace.</p>
-        
-        <p>Kompletní data dotazníku najdete v databázi pod Session ID: <code>${sessionId}</code></p>
+
+      <div class="section basic-info">
+        <h3>👤 Základní údaje</h3>
+        <div class="field"><strong>Jméno:</strong> ${dotaznikData.jmeno || 'Neuvedeno'}</div>
+        <div class="field"><strong>Email:</strong> ${dotaznikData.email || 'Neuvedeno'}</div>
+        <div class="field"><strong>Telefon:</strong> ${dotaznikData.telefon || 'Neuvedeno'}</div>
+        <div class="field"><strong>Věk:</strong> ${dotaznikData.vek || 'Neuvedeno'}</div>
+        <div class="field"><strong>Výška:</strong> ${dotaznikData.vyska ? dotaznikData.vyska + ' cm' : 'Neuvedeno'}</div>
+        <div class="field"><strong>Hmotnost:</strong> ${dotaznikData.hmotnost ? dotaznikData.hmotnost + ' kg' : 'Neuvedeno'}</div>
+        <div class="field"><strong>Pohlaví:</strong> ${dotaznikData.pohlavi || 'Neuvedeno'}</div>
       </div>
-      
+
+      <div class="section goals">
+        <h3>🎯 Cíle klienta</h3>
+        <div class="field"><strong>Hlavní cíl:</strong> ${dotaznikData.hlavniCil || 'Neuvedeno'}</div>
+        ${dotaznikData.vedlejsiCile ? `<div class="field"><strong>Vedlejší cíle:</strong> ${dotaznikData.vedlejsiCile}</div>` : ''}
+        ${dotaznikData.terminalCile ? `<div class="field"><strong>Terminální cíle:</strong> ${dotaznikData.terminalCile}</div>` : ''}
+      </div>
+
+      <div class="section health-info">
+        <h3>🏥 Zdravotní stav</h3>
+        ${dotaznikData.zdravotniDiagnozy ? `<div class="field"><strong>Zdravotní diagnózy:</strong> ${dotaznikData.zdravotniDiagnozy}</div>` : ''}
+        ${dotaznikData.lekyDoplnky ? `<div class="field"><strong>Léky a doplňky:</strong> ${dotaznikData.lekyDoplnky}</div>` : ''}
+        ${dotaznikData.alergie ? `<div class="field"><strong>Alergie:</strong> ${dotaznikData.alergie}</div>` : ''}
+        <div class="field"><strong>Celkový zdravotní stav:</strong> ${dotaznikData.zdravotniStav || 'Neuvedeno'}</div>
+        ${dotaznikData.krevniTesty ? `<div class="field"><strong>Krevní testy:</strong> ${dotaznikData.krevniTesty}</div>` : ''}
+        ${dotaznikData.bolesti ? `<div class="field"><strong>Bolesti:</strong> ${dotaznikData.bolesti}</div>` : ''}
+      </div>
+
+      <div class="section body-composition">
+        <h3>🏋️‍♂️ Tělesná kompozice a pohyb</h3>
+        ${dotaznikData.telesnaKonstituce ? `<div class="field"><strong>Tělesná konstituce:</strong> ${dotaznikData.telesnaKonstituce}</div>` : ''}
+        ${dotaznikData.pohybovyRezim ? `<div class="field"><strong>Pohybový režim:</strong> ${dotaznikData.pohybovyRezim}</div>` : ''}
+        ${dotaznikData.tydennieakitivty ? `<div class="field"><strong>Týdenní aktivity:</strong> ${dotaznikData.tydennieakitivty}</div>` : ''}
+        ${dotaznikData.sedaveZamestnani ? `<div class="field"><strong>Sedavé zaměstnání:</strong> ${dotaznikData.sedaveZamestnani}</div>` : ''}
+        ${dotaznikData.pohybovaOmezeni ? `<div class="field"><strong>Pohybová omezení:</strong> ${dotaznikData.pohybovaOmezeni}</div>` : ''}
+      </div>
+
+      <div class="section sleep-info">
+        <h3>😴 Spánek</h3>
+        ${dotaznikData.hodinySpanek ? `<div class="field"><strong>Hodiny spánku:</strong> ${dotaznikData.hodinySpanek}</div>` : ''}
+        ${dotaznikData.odpocaty ? `<div class="field"><strong>Odpočatý po probuzení:</strong> ${dotaznikData.odpocaty}</div>` : ''}
+        ${dotaznikData.spankoveNavyky ? `<div class="field"><strong>Spánkové návyky:</strong> ${dotaznikData.spankoveNavyky}</div>` : ''}
+        ${dotaznikData.problemySpanek ? `<div class="field"><strong>Problémy se spánkem:</strong> ${dotaznikData.problemySpanek}</div>` : ''}
+      </div>
+
+      <div class="section eating-habits">
+        <h3>🍽️ Stravovací návyky</h3>
+        ${dotaznikData.pocetJidel ? `<div class="field"><strong>Počet jídel denně:</strong> ${dotaznikData.pocetJidel}</div>` : ''}
+        ${dotaznikData.typJidel ? `<div class="field"><strong>Typ jídel:</strong> ${dotaznikData.typJidel}</div>` : ''}
+        ${dotaznikData.castostMaso ? `<div class="field"><strong>Četnost masa:</strong> ${dotaznikData.castostMaso}</div>` : ''}
+        ${dotaznikData.pravidelnost ? `<div class="field"><strong>Pravidelnost jídel:</strong> ${dotaznikData.pravidelnost}</div>` : ''}
+        ${dotaznikData.voda ? `<div class="field"><strong>Pitný režim:</strong> ${dotaznikData.voda}</div>` : ''}
+        ${dotaznikData.zachvaty ? `<div class="field"><strong>Záchvaty hladu/přejídání:</strong> ${dotaznikData.zachvaty}</div>` : ''}
+        ${dotaznikData.spokojenostJidlo ? `<div class="field"><strong>Spokojenost s jídlem:</strong> ${dotaznikData.spokojenostJidlo}</div>` : ''}
+      </div>
+
+      <div class="section eating-history">
+        <h3>📋 Stravovací minulost</h3>
+        ${dotaznikData.minuleDiety ? `<div class="field"><strong>Minulé diety:</strong> ${dotaznikData.minuleDiety}</div>` : ''}
+        ${dotaznikData.fungovaloNefungovalo ? `<div class="field"><strong>Co fungovalo/nefungovalo:</strong> ${dotaznikData.fungovaloNefungovalo}</div>` : ''}
+        ${dotaznikData.vztahKJidlu ? `<div class="field"><strong>Vztah k jídlu:</strong> ${dotaznikData.vztahKJidlu}</div>` : ''}
+      </div>
+
+      <div class="section psychology">
+        <h3>🧠 Psychika a životní styl</h3>
+        ${dotaznikData.aktualniStres ? `<div class="field"><strong>Aktuální stres:</strong> ${dotaznikData.aktualniStres}</div>` : ''}
+        ${dotaznikData.hlavniStresor ? `<div class="field"><strong>Hlavní stresor:</strong> ${dotaznikData.hlavniStresor}</div>` : ''}
+        ${dotaznikData.ritualyRelaxace ? `<div class="field"><strong>Rituály relaxace:</strong> ${dotaznikData.ritualyRelaxace}</div>` : ''}
+        ${dotaznikData.koureniAlkohol ? `<div class="field"><strong>Kouření/alkohol:</strong> ${dotaznikData.koureniAlkohol}</div>` : ''}
+        ${dotaznikData.volnyCas ? `<div class="field"><strong>Volný čas:</strong> ${dotaznikData.volnyCas}</div>` : ''}
+        ${dotaznikData.podporaOkoli ? `<div class="field"><strong>Podpora okolí:</strong> ${dotaznikData.podporaOkoli}</div>` : ''}
+      </div>
+
+      ${dotaznikData.zaznamJidelnicku ? `
+      <div class="section food-diary">
+        <h3>📝 Záznam jídelníčku</h3>
+        <div style="background: #f9f9f9; padding: 15px; border-radius: 4px; white-space: pre-line;">${dotaznikData.zaznamJidelnicku}</div>
+      </div>
+      ` : ''}
+
+      <div class="section motivation">
+        <h3>💭 Motivace a očekávání</h3>
+        <div class="field"><strong>Důvod poradenství:</strong> ${dotaznikData.duvodPoradenstvi || 'Neuvedeno'}</div>
+        ${dotaznikData.ocekavani ? `<div class="field"><strong>Očekávání:</strong> ${dotaznikData.ocekavani}</div>` : ''}
+        <div class="field"><strong>Připravenost:</strong> ${dotaznikData.pripravenost || 'Neuvedeno'}</div>
+        ${dotaznikData.prekazy ? `<div class="field"><strong>Překáže:</strong> ${dotaznikData.prekazy}</div>` : ''}
+      </div>
+
       <div class="footer">
-        <p>🌱 Jídlo s Martinem - Automatické upozornění</p>
-        <p>Tento email byl vygenerován automaticky po vyplnění dotazníku.</p>
+        <p><strong>Session ID:</strong> ${sessionId}</p>
+        <p>Klient bude přesměrován na rezervaci konzultace.</p>
+        <p>Tento email obsahuje všechna data z vyplněného dotazníku.</p>
       </div>
     </body>
     </html>
