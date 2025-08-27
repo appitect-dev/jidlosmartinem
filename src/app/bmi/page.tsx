@@ -499,7 +499,7 @@ export default function BMICalculator() {
                           Zavolat
                         </a>
                         <a
-                          href="mailto:martin@jidlosmartinem.cz"
+                          href="mailto:info@jidlosmartinem.cz"
                           className="flex items-center justify-center px-6 py-3 bg-transparent border-2 border-white text-white rounded-xl font-semibold hover:bg-white hover:text-green-700 transition-all"
                         >
                           <Mail className="h-5 w-5 mr-2" />

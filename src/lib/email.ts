@@ -71,7 +71,7 @@ export async function sendBookingNotificationEmail({
 
   // Prepare email recipients
   const recipients: string[] = [
-    process.env.MARTIN_EMAIL || 'martin@jidlosmartinem.cz',
+    process.env.MARTIN_EMAIL || 'info@jidlosmartinem.cz',
     process.env.ADAM_EMAIL,
     process.env.VANDL_EMAIL
   ].filter((email): email is string => Boolean(email)); // Remove any undefined values
@@ -270,7 +270,7 @@ export async function sendWelcomeEmail(inviteeName: string, inviteeEmail: string
         
         <h3>📞 Kontakt</h3>
         <p>V případě jakýchkoli dotazů nebo potřeby změny termínu mě neváhejte kontaktovat:</p>
-        <p><strong>Email:</strong> martin@jidlosmartinem.cz</p>
+        <p><strong>Email:</strong> info@jidlosmartinem.cz</p>
         
         <p>Těším se na naše setkání!</p>
         <p><strong>Martin</strong><br>Výživový poradce</p>
@@ -297,7 +297,7 @@ export async function sendWelcomeEmail(inviteeName: string, inviteeEmail: string
  */
 export async function sendTeamNotificationEmail(subject: string, html: string) {
   const recipients: string[] = [
-    process.env.MARTIN_EMAIL || 'martin@jidlosmartinem.cz',
+    process.env.MARTIN_EMAIL || 'info@jidlosmartinem.cz',
     process.env.ADAM_EMAIL,
     process.env.VANDL_EMAIL
   ].filter((email): email is string => Boolean(email));
@@ -308,7 +308,7 @@ export async function sendTeamNotificationEmail(subject: string, html: string) {
         to: recipient,
         subject: `[Jídlo s Martinem] ${subject}`,
         html,
-        from: 'info@jidlosmartinem.cz'
+        from: 'system@jidlosmartinem.cz'
       })
     )
   );
@@ -323,4 +323,60 @@ export async function sendTeamNotificationEmail(subject: string, html: string) {
   });
 
   return results;
+}
+
+/**
+ * Send form submission notification to the team
+ */
+export async function sendFormSubmissionNotification(clientName: string, clientEmail: string, sessionId: string) {
+  const subject = `Nový dotazník vyplněn - ${clientName}`;
+  
+  const html = `
+    <!DOCTYPE html>
+    <html lang="cs">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Nový dotazník vyplněn</title>
+      <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: #4CAF50; color: white; padding: 20px; border-radius: 8px; text-align: center; }
+        .content { padding: 20px; }
+        .highlight { background: #E8F5E8; padding: 15px; border-radius: 8px; margin: 20px 0; }
+        .footer { text-align: center; margin-top: 30px; padding: 20px; background: #f5f5f5; border-radius: 8px; font-size: 14px; }
+      </style>
+    </head>
+    <body>
+      <div class="header">
+        <h1>🥗 Jídlo s Martinem</h1>
+        <h2>Nový dotazník vyplněn</h2>
+      </div>
+      
+      <div class="content">
+        <p>Dobrý den,</p>
+        
+        <p>byl vyplněn nový dotazník klientem.</p>
+        
+        <div class="highlight">
+          <h3>📋 Informace o klientovi:</h3>
+          <p><strong>Jméno:</strong> ${clientName}</p>
+          <p><strong>Email:</strong> ${clientEmail}</p>
+          <p><strong>Session ID:</strong> ${sessionId}</p>
+          <p><strong>Datum:</strong> ${new Date().toLocaleString('cs-CZ')}</p>
+        </div>
+        
+        <p>Klient obdrží potvrzovací email a bude přesměrován na rezervaci konzultace.</p>
+        
+        <p>Kompletní data dotazníku najdete v databázi pod Session ID: <code>${sessionId}</code></p>
+      </div>
+      
+      <div class="footer">
+        <p>🌱 Jídlo s Martinem - Automatické upozornění</p>
+        <p>Tento email byl vygenerován automaticky po vyplnění dotazníku.</p>
+      </div>
+    </body>
+    </html>
+  `;
+
+  return await sendTeamNotificationEmail(subject, html);
 }

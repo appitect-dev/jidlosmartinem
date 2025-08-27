@@ -85,13 +85,6 @@ function RezervaceContent() {
               Zpět
             </button>
             <div className="flex items-center space-x-2">
-              <Image 
-                src="/logo.png" 
-                alt="Jídlo s Martinem" 
-                width={32}
-                height={32}
-                className="h-8 w-auto"
-              />
               <span className="text-lg font-semibold text-gray-900">
                 Jídlo s Martinem
               </span>

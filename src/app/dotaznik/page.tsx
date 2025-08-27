@@ -110,7 +110,7 @@ function DotaznikForm() {
     const requiredFields = {
         zakladni: ['jmeno', 'email', 'vek', 'vyska', 'hmotnost', 'pohlavi'],
         cil: ['hlavniCil'],
-        motivace: ['duvodPoradenstvi', 'ocekavani']
+        motivace: ['duvodPoradenstvi', 'ocekavani', 'pripravenost']
     };
 
     const handleInputChange = (field: keyof FormData, value: string) => {
@@ -136,6 +136,30 @@ function DotaznikForm() {
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(formData.email)) {
                 newErrors.email = 'Zadejte platnou emailovou adresu';
+            }
+        }
+
+        // Age validation
+        if (sectionId === 'zakladni' && formData.vek) {
+            const age = parseInt(formData.vek);
+            if (isNaN(age) || age < 16 || age > 100) {
+                newErrors.vek = 'Věk musí být mezi 16 a 100 lety';
+            }
+        }
+
+        // Height validation
+        if (sectionId === 'zakladni' && formData.vyska) {
+            const height = parseInt(formData.vyska);
+            if (isNaN(height) || height < 50 || height > 250) {
+                newErrors.vyska = 'Výška musí být mezi 50 a 250 cm';
+            }
+        }
+
+        // Weight validation
+        if (sectionId === 'zakladni' && formData.hmotnost) {
+            const weight = parseInt(formData.hmotnost);
+            if (isNaN(weight) || weight < 20 || weight > 300) {
+                newErrors.hmotnost = 'Hmotnost musí být mezi 20 a 300 kg';
             }
         }
 
@@ -170,7 +194,9 @@ function DotaznikForm() {
         label: string,
         type: 'text' | 'email' | 'number' = 'text',
         required: boolean = false,
-        placeholder?: string
+        placeholder?: string,
+        min?: number,
+        max?: number
     ) => {
         const hasError = !!errors[field];
         return (
@@ -187,6 +213,8 @@ function DotaznikForm() {
                     }`}
                     placeholder={placeholder}
                     required={required}
+                    min={min}
+                    max={max}
                 />
                 {hasError && <p className="mt-1 text-sm text-red-600">{errors[field]}</p>}
             </div>
@@ -257,6 +285,70 @@ function DotaznikForm() {
         try {
             console.log('Submitting dotaznik form...');
             
+            // Validate all required fields before submission
+            let hasErrors = false;
+            const allErrors: Record<string, string> = {};
+
+            // Validate all sections
+            Object.keys(requiredFields).forEach(sectionId => {
+                const fieldsToValidate = requiredFields[sectionId as keyof typeof requiredFields];
+                fieldsToValidate.forEach(field => {
+                    if (!formData[field as keyof FormData].trim()) {
+                        allErrors[field] = 'Toto pole je povinné';
+                        hasErrors = true;
+                    }
+                });
+            });
+
+            // Additional validation rules
+            if (formData.email) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(formData.email)) {
+                    allErrors.email = 'Zadejte platnou emailovou adresu';
+                    hasErrors = true;
+                }
+            }
+
+            if (formData.vek) {
+                const age = parseInt(formData.vek);
+                if (isNaN(age) || age < 16 || age > 100) {
+                    allErrors.vek = 'Věk musí být mezi 16 a 100 lety';
+                    hasErrors = true;
+                }
+            }
+
+            if (formData.vyska) {
+                const height = parseInt(formData.vyska);
+                if (isNaN(height) || height < 50 || height > 250) {
+                    allErrors.vyska = 'Výška musí být mezi 50 a 250 cm';
+                    hasErrors = true;
+                }
+            }
+
+            if (formData.hmotnost) {
+                const weight = parseInt(formData.hmotnost);
+                if (isNaN(weight) || weight < 20 || weight > 300) {
+                    allErrors.hmotnost = 'Hmotnost musí být mezi 20 a 300 kg';
+                    hasErrors = true;
+                }
+            }
+
+            if (hasErrors) {
+                setErrors(allErrors);
+                alert('Zkontrolujte prosím všechna povinná pole a opravte chyby před odesláním.');
+                // Go back to first section with errors
+                const firstErrorSection = Object.keys(requiredFields).find(sectionId => 
+                    requiredFields[sectionId as keyof typeof requiredFields].some(field => allErrors[field])
+                );
+                if (firstErrorSection) {
+                    const sectionIndex = sections.findIndex(s => s.id === firstErrorSection);
+                    if (sectionIndex !== -1) {
+                        setCurrentSection(sectionIndex);
+                    }
+                }
+                return;
+            }
+            
             // Uložit data dotazníku
             const response = await fetch('/api/dotaznik', {
                 method: 'POST',
@@ -294,9 +386,9 @@ function DotaznikForm() {
                         <h3 className="text-2xl font-bold text-gray-900 mb-6">👤 Základní údaje</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {renderInputField('jmeno', 'Jméno a příjmení', 'text', true)}
-                            {renderInputField('vek', 'Věk', 'number', true)}
-                            {renderInputField('vyska', 'Výška (cm)', 'number', true)}
-                            {renderInputField('hmotnost', 'Hmotnost (kg)', 'number', true)}
+                            {renderInputField('vek', 'Věk', 'number', true, undefined, 16, 100)}
+                            {renderInputField('vyska', 'Výška (cm)', 'number', true, undefined, 50, 250)}
+                            {renderInputField('hmotnost', 'Hmotnost (kg)', 'number', true, undefined, 20, 300)}
                             {renderSelectField('pohlavi', 'Pohlaví', [
                                 { value: 'muž', label: 'Muž' },
                                 { value: 'žena', label: 'Žena' },
@@ -782,7 +874,7 @@ Den 2:
                                 value: i.toString(),
                                 label: `${i} ${i <= 3 ? '(nízká)' : i <= 6 ? '(střední)' : '(vysoká)'}`
                             }))
-                        ], false)}
+                        ], true)}
                         {renderTextareaField('prekazy', 'Co by vás mohlo během procesu brzdit?', 4, false, 'Časové omezení, rodinné situace, cestování...')}
                     </div>
                 );

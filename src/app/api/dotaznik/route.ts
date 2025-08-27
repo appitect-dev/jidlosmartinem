@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { randomUUID } from 'crypto';
 import { saveDotaznik, CreateDotaznikData } from '@/lib/queries';
-import { sendEmail } from '@/lib/email';
+import { sendEmail, sendFormSubmissionNotification } from '@/lib/email';
 
 // Type definition for the form data
 interface DotaznikFormData {
@@ -236,7 +236,7 @@ function generateConfirmationEmail(jmeno: string, sessionId: string): string {
         
         <h3>📞 Máte dotazy?</h3>
         <p>V případě jakýchkoli dotazů nebo potřeby upřesnění něčeho z dotazníku se neváhejte ozvat:</p>
-        <p><strong>Email:</strong> martin@jidlosmartinem.cz</p>
+        <p><strong>Email:</strong> info@jidlosmartinem.cz</p>
         
         <p>Těším se na naše setkání!</p>
         <p><strong>Martin</strong><br>Výživový poradce</p>
@@ -287,7 +287,7 @@ export async function POST(request: NextRequest) {
           to: formData.email,
           subject: 'Potvrzení vyplnění dotazníku - Jídlo s Martinem',
           html: generateConfirmationEmail(formData.jmeno, sessionId),
-          from: 'martin@jidlosmartinem.cz'
+          from: 'info@jidlosmartinem.cz'
         });
 
         if (confirmationResult.success) {
@@ -297,6 +297,15 @@ export async function POST(request: NextRequest) {
         }
       } catch (emailError) {
         console.error('Error sending confirmation email:', emailError);
+        // Don't fail the form submission if email fails
+      }
+
+      // Send notification to the team (Martin, Adam, Vandl)
+      try {
+        await sendFormSubmissionNotification(formData.jmeno, formData.email, sessionId);
+        console.log('Team notification sent successfully');
+      } catch (emailError) {
+        console.error('Error sending team notification:', emailError);
         // Don't fail the form submission if email fails
       }
       
