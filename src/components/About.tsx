@@ -1,153 +1,150 @@
 "use client";
 
 import Image from "next/image";
-import {User, Award, CheckCircle, Target} from "lucide-react";
+import { User, Award, CheckCircle, Target, ArrowRight } from "lucide-react";
 
 export default function About() {
-    return (
-        <section id="o-mne" className="py-20 bg-white">
-            <div className="max-w-4xl mx-auto px-6 lg:px-8">
-                <div className="text-center space-y-12">
-                    <div className="flex items-center justify-center mb-6">
-                        <User className="w-8 h-8 text-green-600 mr-3"/>
-                        <h2 className="text-4xl lg:text-5xl font-black text-gray-900 leading-tight">
-                            Kdo jsem
-                        </h2>
-                    </div>
+  return (
+    <section
+      id="o-mne"
+      className="py-24 bg-gradient-to-br from-green-50 via-white to-blue-50"
+    >
+      <div className="max-w-4xl mx-auto px-6 lg:px-8">
+        <div className="text-center space-y-16">
+          <h2 className="text-4xl lg:text-5xl font-black text-gray-900 leading-tight">
+            Kdo jsem
+          </h2>
 
-                    <div
-                        className="bg-gradient-to-r from-green-50 to-blue-50 rounded-2xl p-8 border border-green-200 max-w-4xl mx-auto">
-                        <div
-                            className="flex flex-col lg:flex-row items-center justify-center space-y-6 lg:space-y-0 lg:space-x-8 mb-6">
-                            {/* Profile Image - Made Larger */}
-                            <div className="relative">
-                                <div
-                                    className="w-32 h-32 lg:w-40 lg:h-40 rounded-full overflow-hidden shadow-xl border-4 border-white">
-                                    <Image
-                                        src="/me.png"
-                                        alt="Martin Cidlinský - Certifikovaný výživový poradce"
-                                        width={160}
-                                        height={160}
-                                        className="w-full h-full object-cover"
-                                    />
-                                </div>
-                                <div
-                                    className="absolute -bottom-2 -right-2 w-10 h-10 bg-green-600 rounded-full flex items-center justify-center">
-                                    <Award className="w-6 h-6 text-white"/>
-                                </div>
-                            </div>
+          {/* Profile Card */}
+          <div className="bg-white rounded-2xl p-8 lg:p-12 shadow-lg border border-gray-200">
+            <div className="flex flex-col lg:flex-row items-center lg:items-start space-y-8 lg:space-y-0 lg:space-x-12">
+              {/* Profile Image */}
+              <div className="relative flex-shrink-0">
+                <div className="w-32 h-32 lg:w-40 lg:h-40 rounded-full overflow-hidden shadow-xl border-4 border-green-200">
+                  <Image
+                    src="/me.png"
+                    alt="Martin Cidlinský - Certifikovaný výživový poradce"
+                    width={160}
+                    height={160}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="absolute -bottom-2 -right-2 w-12 h-12 bg-green-600 rounded-full flex items-center justify-center shadow-lg">
+                  <Award className="w-6 h-6 text-white" />
+                </div>
+              </div>
 
-                            {/* Name and Title */}
-                            <div className="text-center lg:text-left">
-                                <h3 className="text-3xl font-bold text-gray-900">
-                                    Martin Cidlinský
-                                </h3>
-                                <p className="text-green-700 font-semibold text-lg">
-                                    Certifikovaný výživový poradce
-                                </p>
-                            </div>
-                        </div>
-                    </div>
+              {/* Name and Title */}
+              <div className="text-center lg:text-left flex-grow">
+                <h3 className="text-3xl lg:text-4xl font-black text-gray-900 mb-3">
+                  Martin Cidlinský
+                </h3>
+                <p className="text-green-700 font-bold text-xl mb-6">
+                  Certifikovaný výživový poradce
+                </p>
+                <p className="text-lg lg:text-xl text-gray-700 leading-relaxed">
+                  Více než{" "}
+                  <strong className="text-green-700">
+                    5 let pomáhám lidem, kteří nemají čas na složité jídelníčky
+                    a hodiny v posilovně, zhubnout zdravě a udržitelně
+                  </strong>
+                  .
+                </p>
+              </div>
+            </div>
+          </div>
 
-                    <div className="text-left max-w-3xl mx-auto space-y-8">
-                        <p className="text-lg text-gray-700 leading-relaxed">
-                            Jmenuji se{" "}
-                            <strong className="text-green-700">Martin Cidlinský</strong> a jsem{" "}
-                            <span className="bg-green-100 text-green-800 px-2 py-1 rounded font-semibold">
-                certifikovaný výživový poradce
-              </span>
-                            .
-                        </p>
+          {/* Benefits Cards */}
+          <div className="space-y-8">
+            <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-200">
+              <h3 className="text-2xl lg:text-3xl font-black text-gray-900 mb-6 text-center">
+                Můj přístup{" "}
+                <span className="text-green-600">je jednoduchý</span>
+              </h3>
+              <p className="text-lg text-gray-700 text-center leading-relaxed mb-8">
+                Místo univerzálních diet stavím{" "}
+                <strong className="text-green-700">
+                  efektivní plány na míru
+                </strong>
+                , které se přizpůsobí vašemu pracovnímu i rodinnému životu.
+              </p>
 
-                        <p className="text-lg text-gray-700 leading-relaxed">
-                            Více než{" "}
-                            <strong className="text-green-700">
-                                5 let pomáhám lidem, kteří nemají čas na složité jídelníčky a
-                                hodiny v posilovně, zhubnout zdravě a udržitelně
-                            </strong>
-                            .
-                        </p>
+              <div className="text-xl font-bold text-gray-900 text-center mb-8">
+                Proto moji klienti dokážou:
+              </div>
 
-                        <div className="bg-green-50 rounded-xl p-6 border border-green-200">
-                            <p className="text-lg text-gray-700 leading-relaxed">
-                                Můj přístup{" "}
-                                <strong className="text-green-700">je jednoduchý</strong> – místo
-                                univerzálních diet stavím{" "}
-                                <strong className="text-green-700">
-                                    efektivní plány na míru
-                                </strong>
-                                , které se přizpůsobí vašemu pracovnímu i rodinnému životu.
-                            </p>
-                        </div>
-
-                        <div className="space-y-6">
-                            <div className="flex items-center">
-                                <Target className="w-6 h-6 text-green-600 mr-3"/>
-                                <p className="text-lg text-gray-700 font-medium">
-                                    Proto moji klienti dokážou:
-                                </p>
-                            </div>
-
-                            <div className="grid md:grid-cols-2 gap-4">
-                                <div className="flex items-start space-x-3">
-                                    <CheckCircle className="w-6 h-6 text-green-600 mt-1 flex-shrink-0"/>
-                                    <span className="text-gray-700">
-                    Shodit přebytečná kila{" "}
-                                        <strong>bez drastických změn</strong>.
+              <div className="grid gap-4 max-w-3xl mx-auto">
+                <div className="flex items-start text-start space-x-4 bg-green-50 rounded-lg p-5 border-l-4 border-green-400">
+                  <ArrowRight className="w-6 h-6  text-green-600 mt-0.5 flex-shrink-0 hidden md:block" />
+                  <span className="text-gray-700 leading-relaxed">
+                    <strong className="text-green-700">
+                      Shodit přebytečná kila
+                    </strong>{" "}
+                    bez drastických změn
                   </span>
-                                </div>
+                </div>
 
-                                <div className="flex items-start space-x-3">
-                                    <CheckCircle className="w-6 h-6 text-green-600 mt-1 flex-shrink-0"/>
-                                    <span className="text-gray-700">
-                    Najít <strong>rovnováhu</strong> mezi zdravím a povinnostmi.
+                <div className="flex items-start text-start space-x-4 bg-green-50 rounded-lg p-5 border-l-4 border-green-400">
+                  <ArrowRight className="w-6 h-6  text-green-600 mt-0.5 flex-shrink-0 hidden md:block" />
+                  <span className="text-gray-700 leading-relaxed">
+                    Najít <strong className="text-green-700">rovnováhu</strong>{" "}
+                    mezi zdravým životním stylem a povinnostmi
                   </span>
-                                </div>
+                </div>
 
-                                <div className="flex items-start space-x-3">
-                                    <CheckCircle className="w-6 h-6 text-green-600 mt-1 flex-shrink-0"/>
-                                    <span className="text-gray-700">
-                    Udržet výsledky <strong>dlouhodobě</strong>
+                <div className="flex items-start text-start space-x-4 bg-green-50 rounded-lg p-5 border-l-4 border-green-400">
+                  <ArrowRight className="w-6 h-6 text-green-600 mt-0.5 flex-shrink-0 hidden md:block" />
+                  <span className="text-gray-700 leading-relaxed">
+                    <strong className="text-green-700">
+                      Udržet výsledky dlouhodobě
+                    </strong>
                   </span>
-                                </div>
+                </div>
 
-                                <div className="flex items-start space-x-3">
-                                    <CheckCircle className="w-6 h-6 text-green-600 mt-1 flex-shrink-0"/>
-                                    <span className="text-gray-700">
+                <div className="flex items-start text-start space-x-4 bg-green-50 rounded-lg p-5 border-l-4 border-green-400">
+                  <ArrowRight className="w-6 h-6 text-green-600 mt-0.5 flex-shrink-0 hidden md:block" />
+                  <span className="text-gray-700 leading-relaxed">
                     Bez toho, abyste{" "}
-                                        <strong>počítali každou kalorii</strong>
+                    <strong className="text-green-700">
+                      počítali každou kalorii
+                    </strong>
                   </span>
-                                </div>
+                </div>
 
-                                <div className="flex items-start space-x-3">
-                                    <CheckCircle className="w-6 h-6 text-green-600 mt-1 flex-shrink-0"/>
-                                    <span className="text-gray-700">
+                <div className="flex items-start text-start space-x-4 bg-green-50 rounded-lg p-5 border-l-4 border-green-400">
+                  <ArrowRight className="w-6 h-6 text-green-600 mt-0.5 flex-shrink-0 hidden md:block" />
+                  <span className="text-gray-700 leading-relaxed">
                     Bez toho, abyste{" "}
-                                        <strong>museli chodit do posilovny</strong>
+                    <strong className="text-green-700">
+                      museli chodit do posilovny
+                    </strong>
                   </span>
-                                </div>
+                </div>
 
-                                <div className="flex items-start space-x-3">
-                                    <CheckCircle className="w-6 h-6 text-green-600 mt-1 flex-shrink-0"/>
-                                    <span className="text-gray-700">
-                    Bez <strong>hladovění a jojo efektu</strong>
+                <div className="flex items-start text-start space-x-4 bg-green-50 rounded-lg p-5 border-l-4 border-green-400">
+                  <ArrowRight className="w-6 h-6 text-green-600 mt-0.5 flex-shrink-0 hidden md:block" />
+                  <span className="text-gray-700 leading-relaxed">
+                    Bez{" "}
+                    <strong className="text-green-700">
+                      hladovění a jojo efektu
+                    </strong>
                   </span>
-                                </div>
-                            </div>
-                        </div>
+                </div>
+              </div>
+            </div>
 
-                        <div className="bg-gray-900 text-white rounded-xl p-6 text-center">
-                            <p className="text-lg leading-relaxed">
-                                Místo univerzálních rad dostanete{" "}
-                                <span className="text-yellow-400 font-bold">
+            <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-200 text-center">
+              <p className="text-lg lg:text-xl text-gray-700 leading-relaxed">
+                Místo univerzálních rad dostanete{" "}
+                <span className="bg-green-100 text-green-800 px-4 py-2 rounded-lg font-bold">
                   30denní program na míru
                 </span>
-                                , který zapadne do vašeho běžného dne.
-                            </p>
-                        </div>
-                    </div>
-                </div>
+                , který zapadne do vašeho běžného dne.
+              </p>
             </div>
-        </section>
-    );
+          </div>
+        </div>
+      </div>
+    </section>
+  );
 }

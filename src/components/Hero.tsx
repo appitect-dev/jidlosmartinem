@@ -16,16 +16,16 @@ export default function Hero() {
                     className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl opacity-15"></div>
             </div>
 
-            <section className="relative pt-32 pb-20 px-6 lg:px-8">
+            <section className="relative pt-48 pb-20 px-6 lg:px-8">
                 <div className="max-w-5xl mx-auto text-center">
                     {/* Trust indicator */}
-                    <div
+                    {/* <div
                         className="inline-flex items-center bg-green-100 text-green-800 px-4 py-2 rounded-full text-sm font-semibold mb-8">
                         <Users className="w-4 h-4 mr-2"/>
                         Důvěřuje nám 150+ klientů
-                    </div>
+                    </div> */}
 
-                    <h1 className="text-5xl lg:text-6xl font-black text-gray-900 leading-tight mb-8">
+                    <h1 className="text-5xl lg:text-7xl font-black text-gray-900 leading-tight mb-8">
                         <span className="text-green-600">Zhubněte 5 kg</span> za 30 dní –
                         <br/>i když máte <span className="underline decoration-yellow-400 decoration-4">práci, rodinu a minimum času</span>
                     </h1>
@@ -48,14 +48,14 @@ export default function Hero() {
                         </div>
                     </div>
 
-                    <div
+                    {/* <div
                         className="bg-white rounded-2xl shadow-lg p-4 md:p-8 border border-gray-100 max-w-3xl mx-auto mb-8">
                         <p className="text-xl text-gray-700 leading-relaxed">
                             👉 <em>Rezervujte si svou <span
                             className="bg-green-100 text-green-800 px-2 py-1 rounded font-semibold">konzultaci zdarma</span> a
                             zjistěte, jak může vypadat váš <strong>30denní plán na míru</strong>.</em>
                         </p>
-                    </div>
+                    </div> */}
 
                     <a
                         href="/rezervace"
