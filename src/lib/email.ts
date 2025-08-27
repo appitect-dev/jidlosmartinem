@@ -69,12 +69,12 @@ export async function sendBookingNotificationEmail({
     dotaznikData
   });
 
-  // Prepare email recipients
+  // Prepare email recipients - hardcoded team emails
   const recipients: string[] = [
-    process.env.MARTIN_EMAIL || 'info@jidlosmartinem.cz',
-    process.env.ADAM_EMAIL || 'adam.bardzak@apptiect.eu',
-    process.env.VANDL_EMAIL || 'jan.vandlicek@apptiect.eu'
-  ].filter((email): email is string => Boolean(email)); // Remove any undefined values
+    'info@jidlosmartinem.cz',        // Martin
+    'adam.bardzak@appitect.eu',      // Adam  
+    'jan.vandlicek@appitect.eu'      // Vandl
+  ];
 
   // Send to all recipients
   const results = await Promise.allSettled(
@@ -296,11 +296,12 @@ export async function sendWelcomeEmail(inviteeName: string, inviteeEmail: string
  * Send notification email to the entire team (Martin, Adam, Vandl)
  */
 export async function sendTeamNotificationEmail(subject: string, html: string) {
+  // Hardcoded team emails for reliability
   const recipients: string[] = [
-    process.env.MARTIN_EMAIL || 'info@jidlosmartinem.cz',
-    process.env.ADAM_EMAIL || 'adam.bardzak@apptiect.eu',
-    process.env.VANDL_EMAIL || 'jan.vandlicek@apptiect.eu'
-  ].filter((email): email is string => Boolean(email));
+    'info@jidlosmartinem.cz',        // Martin
+    'adam.bardzak@appitect.eu',      // Adam
+    'jan.vandlicek@appitect.eu'      // Vandl
+  ];
 
   const results = await Promise.allSettled(
     recipients.map(recipient => 
