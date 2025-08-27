@@ -3,7 +3,6 @@
 import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { ChevronLeft } from 'lucide-react';
-import Image from 'next/image';
 
 interface CalendlyEmbedProps {
   sessionId: string;
