@@ -29,14 +29,44 @@ try {
 /**
  * Create a Google Doc with client's form data
  */
-export async function createClientGoogleDoc(sessionId: string): Promise<{ success: boolean; documentId?: string; documentUrl?: string; error?: string }> {
+export async function createClientGoogleDoc(sessionId: string) {
   try {
-    // Check if Google APIs are available
-    if (!docs || !drive) {
-      console.warn('Google APIs not initialized - Google Docs functionality disabled');
-      return { success: false, error: 'Google APIs not configured' };
+    console.log('🔍 Starting Google Doc creation for sessionId:', sessionId);
+    
+    if (!process.env.GOOGLE_SERVICE_ACCOUNT_KEY) {
+      console.error('❌ GOOGLE_SERVICE_ACCOUNT_KEY not found');
+      return { success: false, error: 'GOOGLE_SERVICE_ACCOUNT_KEY not configured' };
     }
 
+    if (!process.env.GOOGLE_DRIVE_FOLDER_ID) {
+      console.error('❌ GOOGLE_DRIVE_FOLDER_ID not found');
+      return { success: false, error: 'GOOGLE_DRIVE_FOLDER_ID not configured' };
+    }
+
+    // Parse credentials
+    let credentials;
+    try {
+      credentials = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY);
+      console.log('✅ Service account email:', credentials.client_email);
+    } catch (parseError) {
+      console.error('❌ JSON parse error:', parseError);
+      return { success: false, error: 'Invalid JSON in GOOGLE_SERVICE_ACCOUNT_KEY' };
+    }
+
+    // Initialize Google Auth
+    const auth = new google.auth.GoogleAuth({
+      credentials,
+      scopes: [
+        "https://www.googleapis.com/auth/drive",
+        "https://www.googleapis.com/auth/documents"
+      ],
+    });
+
+    const docs = google.docs({ version: "v1", auth });
+    const drive = google.drive({ version: "v3", auth });
+
+    console.log('🔍 Fetching dotaznik data for sessionId:', sessionId);
+    
     // Fetch the complete form data from database
     const dotaznikData = await prisma.dotaznik.findFirst({
       where: { sessionId: sessionId }
@@ -107,10 +137,16 @@ export async function createClientGoogleDoc(sessionId: string): Promise<{ succes
     };
 
   } catch (error) {
-    console.error('Failed to create Google Doc:', error);
+    console.error('💥 Detailed Google Docs error:', {
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined,
+      name: error instanceof Error ? error.name : undefined,
+      error: error
+    });
+    
     return { 
       success: false, 
-      error: error instanceof Error ? error.message : 'Unknown error' 
+      error: `Google Docs creation failed: ${error instanceof Error ? error.message : 'Unknown error'}` 
     };
   }
 }
