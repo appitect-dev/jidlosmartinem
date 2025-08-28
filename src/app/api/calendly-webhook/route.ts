@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getDotaznikBySessionId } from '@/lib/queries';
 import { sendBookingNotificationEmail, sendWelcomeEmail } from '@/lib/email';
+import { createClientGoogleDoc } from '@/lib/google-docs';
 
 // Type definitions for Calendly webhook payload
 interface CalendlyInvitee {
@@ -233,6 +234,22 @@ export async function POST(request: NextRequest) {
 
     // Send emails
     try {
+      // Create Google Doc for the client first
+      let googleDocUrl = '';
+      try {
+        console.log(`Creating Google Doc for sessionId: ${sessionId}`);
+        const docResult = await createClientGoogleDoc(sessionId);
+        if (docResult.success && docResult.documentUrl) {
+          googleDocUrl = docResult.documentUrl;
+          console.log(`Google Doc created successfully: ${googleDocUrl}`);
+        } else {
+          console.error('Failed to create Google Doc:', docResult.error);
+        }
+      } catch (docError) {
+        console.error('Error creating Google Doc:', docError);
+        // Continue with email sending even if Google Doc creation fails
+      }
+
       // Send notification email to Martin with complete dotaznik data
       const martinResult = await sendBookingNotificationEmail({
         inviteeName: meetingInfo.inviteeName,
@@ -240,7 +257,8 @@ export async function POST(request: NextRequest) {
         eventStartTime: meetingInfo.startTime,
         eventName: meetingInfo.eventName,
         sessionId,
-        dotaznikData
+        dotaznikData,
+        googleDocUrl // Include Google Doc URL if available
       });
 
       if (martinResult.success) {

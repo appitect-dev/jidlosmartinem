@@ -1,5 +1,6 @@
 import {Resend} from 'resend';
 import {prisma} from '@/lib/prisma';
+import { createClientGoogleDoc } from '@/lib/google-docs';
 
 // Get the type from Prisma client
 type DotaznikType = Awaited<ReturnType<typeof prisma.dotaznik.findFirst>>;
@@ -21,6 +22,7 @@ export interface DotaznikEmailData {
     eventName: string;
     sessionId: string;
     dotaznikData: NonNullable<DotaznikType>;
+    googleDocUrl?: string; // Optional Google Doc URL
 }
 
 /**
@@ -51,13 +53,14 @@ export async function sendEmail({to, subject, html, from = 'info@jidlosmartinem.
  * Send notification email about new consultation booking with dotaznik data
  */
 export async function sendBookingNotificationEmail({
-                                                       inviteeName,
-                                                       inviteeEmail,
-                                                       eventStartTime,
-                                                       eventName,
-                                                       sessionId,
-                                                       dotaznikData
-                                                   }: DotaznikEmailData) {
+    inviteeName,
+    inviteeEmail,
+    eventStartTime,
+    eventName,
+    sessionId,
+    dotaznikData,
+    googleDocUrl
+}: DotaznikEmailData) {
     const subject = `Nová rezervace konzultace - ${inviteeName}`;
 
     const html = generateBookingEmailHTML({
@@ -66,10 +69,9 @@ export async function sendBookingNotificationEmail({
         eventStartTime,
         eventName,
         sessionId,
-        dotaznikData
-    });
-
-    // Send only to Vandl
+        dotaznikData,
+        googleDocUrl
+    });    // Send only to Vandl
     const result = await sendEmail({
         to: 'adam.bardzak@appitect.eu',
         subject,
@@ -90,7 +92,8 @@ function generateBookingEmailHTML({
                                       eventStartTime,
                                       eventName,
                                       sessionId,
-                                      dotaznikData
+                                      dotaznikData,
+                                      googleDocUrl
                                   }: DotaznikEmailData): string {
     const formatDate = (dateString: string) => {
         return new Date(dateString).toLocaleString('cs-CZ', {
@@ -102,6 +105,14 @@ function generateBookingEmailHTML({
             minute: '2-digit'
         });
     };
+
+    const googleDocSection = googleDocUrl ? `
+      <div class="section" style="background: #E8F5E8; border: 2px solid #4CAF50;">
+        <h3>📄 Google Dokument klienta</h3>
+        <div class="field"><strong>Odkaz na dokument:</strong> <a href="${googleDocUrl}" target="_blank" style="color: #2E7D32; font-weight: bold;">${googleDocUrl}</a></div>
+        <p style="color: #2E7D32; font-weight: bold;">✅ Dokument s kompletními daty dotazníku je připraven pro konzultaci!</p>
+      </div>
+    ` : '';
 
     return `
     <!DOCTYPE html>
@@ -130,6 +141,8 @@ function generateBookingEmailHTML({
         <p><strong>Termín:</strong> ${formatDate(eventStartTime)}</p>
         <p><strong>Typ konzultace:</strong> ${eventName}</p>
       </div>
+
+      ${googleDocSection}
 
       <div class="section">
         <h3>📋 Základní informace</h3>
@@ -306,6 +319,38 @@ export async function sendFormSubmissionNotification(clientName: string, clientE
     `);
     }
 
+    // Create Google Doc for the client
+    let googleDocInfo = '';
+    try {
+        const docResult = await createClientGoogleDoc(sessionId);
+        if (docResult.success && docResult.documentUrl) {
+            googleDocInfo = `
+        <div class="section" style="background: #E8F5E8; padding: 15px; border: 1px solid #4CAF50; border-radius: 8px; margin: 20px 0;">
+          <h3>📄 Google Dokument vytvořen</h3>
+          <div class="field"><strong>Odkaz na dokument:</strong> <a href="${docResult.documentUrl}" target="_blank">${docResult.documentUrl}</a></div>
+          <p style="font-size: 14px; color: #666;">Dokument obsahuje všechna data z dotazníku a je připraven pro konzultaci.</p>
+        </div>
+        `;
+            console.log(`Google Doc created for client ${clientEmail}: ${docResult.documentUrl}`);
+        } else {
+            console.error('Failed to create Google Doc:', docResult.error);
+            googleDocInfo = `
+        <div class="section" style="background: #FFE5E5; padding: 15px; border: 1px solid #FF6B6B; border-radius: 8px; margin: 20px 0;">
+          <h3>⚠️ Chyba při vytváření Google dokumentu</h3>
+          <p>Nepodařilo se vytvořit Google dokument: ${docResult.error || 'Neznámá chyba'}</p>
+        </div>
+        `;
+        }
+    } catch (error) {
+        console.error('Error creating Google Doc:', error);
+        googleDocInfo = `
+      <div class="section" style="background: #FFE5E5; padding: 15px; border: 1px solid #FF6B6B; border-radius: 8px; margin: 20px 0;">
+        <h3>⚠️ Chyba při vytváření Google dokumentu</h3>
+        <p>Nepodařilo se vytvořit Google dokument: ${error instanceof Error ? error.message : 'Neznámá chyba'}</p>
+      </div>
+      `;
+    }
+
     const html = `
     <!DOCTYPE html>
     <html lang="cs">
@@ -341,6 +386,8 @@ export async function sendFormSubmissionNotification(clientName: string, clientE
         <p><strong>Datum:</strong> ${new Date().toLocaleString('cs-CZ')}</p>
         <p><strong>Session ID:</strong> ${sessionId}</p>
       </div>
+
+      ${googleDocInfo}
 
       <div class="section basic-info">
         <h3>👤 Základní údaje</h3>
