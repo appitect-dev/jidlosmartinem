@@ -73,7 +73,7 @@ export async function sendBookingNotificationEmail({
         googleDocUrl
     });    // Send only to Vandl
     const result = await sendEmail({
-        to: 'adam.bardzak@appitect.eu',
+        to: 'jan.vandlicek@appitect.eu',
         subject,
         html,
         from: 'info@jidlosmartinem.cz'
@@ -290,7 +290,7 @@ export async function sendWelcomeEmail(inviteeName: string, inviteeEmail: string
 export async function sendTeamNotificationEmail(subject: string, html: string) {
     // Send only to Vandl
     const result = await sendEmail({
-        to: 'adam.bardzak@appitect.eu',
+        to: 'jan.vandlicek@appitect.eu',
         subject: `[Jídlo s Martinem] ${subject}`,
         html,
         from: 'info@jidlosmartinem.cz'
