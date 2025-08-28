@@ -7,20 +7,19 @@ type DotaznikType = Awaited<ReturnType<typeof prisma.dotaznik.findFirst>>;
 // Initialize Google Auth only if the environment variable is available
 let auth: InstanceType<typeof google.auth.GoogleAuth> | null = null;
 let docs: ReturnType<typeof google.docs> | null = null;
-let drive: ReturnType<typeof google.drive> | null = null;
+// let drive: ReturnType<typeof google.drive> | null = null; // Not needed for root creation
 
 try {
   if (process.env.GOOGLE_SERVICE_ACCOUNT_KEY) {
     auth = new google.auth.GoogleAuth({
       credentials: JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY),
       scopes: [
-        "https://www.googleapis.com/auth/drive",
-        "https://www.googleapis.com/auth/documents"
+        "https://www.googleapis.com/auth/documents"  // Only Docs API needed
       ],
     });
 
     docs = google.docs({ version: "v1", auth });
-    drive = google.drive({ version: "v3", auth });
+    // drive = google.drive({ version: "v3", auth }); // Not needed for root creation
   }
 } catch (error) {
   console.warn('Failed to initialize Google APIs - Google Docs functionality will be disabled:', error);
@@ -57,13 +56,12 @@ export async function createClientGoogleDoc(sessionId: string) {
     const auth = new google.auth.GoogleAuth({
       credentials,
       scopes: [
-        "https://www.googleapis.com/auth/drive",
-        "https://www.googleapis.com/auth/documents"
+        "https://www.googleapis.com/auth/documents"  // Only Docs API needed for root creation
       ],
     });
 
     const docs = google.docs({ version: "v1", auth });
-    const drive = google.drive({ version: "v3", auth });
+    // const drive = google.drive({ version: "v3", auth }); // Not needed for root creation
 
     console.log('🔍 Fetching dotaznik data for sessionId:', sessionId);
     
@@ -112,7 +110,9 @@ export async function createClientGoogleDoc(sessionId: string) {
       },
     });
 
-    // Share the document in the shared folder (if GOOGLE_DRIVE_FOLDER_ID is set)
+    // DISABLED: Share the document in the shared folder to avoid permission issues
+    // Documents will be created in root Google Drive instead
+    /*
     if (process.env.GOOGLE_DRIVE_FOLDER_ID && drive) {
       try {
         await drive.files.update({
@@ -126,6 +126,7 @@ export async function createClientGoogleDoc(sessionId: string) {
         // Continue anyway, document is still created
       }
     }
+    */
 
     const documentUrl = `https://docs.google.com/document/d/${documentId}/edit`;
     
