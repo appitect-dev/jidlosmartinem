@@ -4,38 +4,56 @@ import { prisma } from '@/lib/prisma';
 // Get the type from Prisma client
 type DotaznikType = Awaited<ReturnType<typeof prisma.dotaznik.findFirst>>;
 
-// Initialize Google APIs with API key
+// Initialize OAuth2 client
+function getOAuth2Client() {
+  if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
+    throw new Error('Google OAuth credentials not configured');
+  }
+
+  const oauth2Client = new google.auth.OAuth2(
+    process.env.GOOGLE_CLIENT_ID,
+    process.env.GOOGLE_CLIENT_SECRET,
+    process.env.GOOGLE_REDIRECT_URI
+  );
+
+  // Set refresh token if available
+  if (process.env.GOOGLE_REFRESH_TOKEN) {
+    oauth2Client.setCredentials({
+      refresh_token: process.env.GOOGLE_REFRESH_TOKEN,
+    });
+  }
+
+  return oauth2Client;
+}
+
+// Initialize Google APIs with OAuth2
 let docs: ReturnType<typeof google.docs> | null = null;
+let drive: ReturnType<typeof google.drive> | null = null;
 
 try {
-  if (process.env.GOOGLE_API_KEY) {
-    console.log('🔍 Initializing Google Docs API with API key...');
-    
-    // Initialize with API key authentication
-    docs = google.docs({ 
-      version: "v1", 
-      auth: process.env.GOOGLE_API_KEY 
-    });
-    
-    console.log('✅ Google Docs API initialized successfully with API key');
+  if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_REFRESH_TOKEN) {
+    const auth = getOAuth2Client();
+    docs = google.docs({ version: "v1", auth });
+    drive = google.drive({ version: "v3", auth });
+    console.log('✅ Google APIs initialized with OAuth2');
   } else {
-    console.warn('⚠️ GOOGLE_API_KEY not found - Google Docs disabled');
+    console.warn('⚠️ Google OAuth credentials not complete');
   }
 } catch (error) {
   console.error('❌ Failed to initialize Google APIs:', error);
 }
 
 /**
- * Create a Google Doc with client's form data using API key
+ * Create a Google Doc with client's form data using OAuth2
  */
 export async function createClientGoogleDoc(sessionId: string): Promise<{ success: boolean; documentId?: string; documentUrl?: string; error?: string }> {
   try {
     console.log('🔍 Starting Google Doc creation for sessionId:', sessionId);
     
-    // Check if Google API key is available
-    if (!process.env.GOOGLE_API_KEY) {
-      console.error('❌ GOOGLE_API_KEY not found');
-      return { success: false, error: 'GOOGLE_API_KEY not configured' };
+    // Check if Google OAuth is configured
+    if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_REFRESH_TOKEN) {
+      console.error('❌ Google OAuth not configured');
+      return { success: false, error: 'Google OAuth not configured' };
     }
 
     // Check if Google APIs are initialized
@@ -44,7 +62,15 @@ export async function createClientGoogleDoc(sessionId: string): Promise<{ succes
       return { success: false, error: 'Google APIs not configured' };
     }
 
-    console.log('✅ Using API key:', process.env.GOOGLE_API_KEY.substring(0, 10) + '...');
+    // Test OAuth2 authentication
+    try {
+      const auth = getOAuth2Client();
+      await auth.getAccessToken();
+      console.log('✅ OAuth2 token obtained successfully');
+    } catch (authError) {
+      console.error('❌ OAuth2 authentication failed:', authError);
+      return { success: false, error: 'OAuth2 authentication failed' };
+    }
 
     console.log('🔍 Fetching dotaznik data for sessionId:', sessionId);
     
@@ -99,23 +125,24 @@ export async function createClientGoogleDoc(sessionId: string): Promise<{ succes
       },
     });
 
-    // DISABLED: Share the document in the shared folder to avoid permission issues
-    // Documents will be created in root Google Drive instead
-    /*
-    if (process.env.GOOGLE_DRIVE_FOLDER_ID && drive) {
+    console.log('✅ Content added to document');
+
+    // Make document accessible (optional - sets sharing to anyone with link can view)
+    if (drive) {
       try {
-        await drive.files.update({
+        await drive.permissions.create({
           fileId: documentId,
-          addParents: process.env.GOOGLE_DRIVE_FOLDER_ID,
-          removeParents: 'root',
+          requestBody: {
+            role: 'reader',
+            type: 'anyone'
+          }
         });
-        console.log(`Document moved to shared folder: ${process.env.GOOGLE_DRIVE_FOLDER_ID}`);
-      } catch (folderError) {
-        console.warn('Failed to move document to shared folder:', folderError);
-        // Continue anyway, document is still created
+        console.log('✅ Document sharing enabled');
+      } catch (shareError) {
+        console.warn('⚠️ Failed to set document sharing:', shareError);
+        // Continue anyway
       }
     }
-    */
 
     const documentUrl = `https://docs.google.com/document/d/${documentId}/edit`;
     
