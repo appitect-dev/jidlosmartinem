@@ -4,83 +4,47 @@ import { prisma } from '@/lib/prisma';
 // Get the type from Prisma client
 type DotaznikType = Awaited<ReturnType<typeof prisma.dotaznik.findFirst>>;
 
-// Initialize Google Auth only if the environment variable is available
-let auth: InstanceType<typeof google.auth.GoogleAuth> | null = null;
+// Initialize Google APIs with API key
 let docs: ReturnType<typeof google.docs> | null = null;
 
 try {
-  if (process.env.GOOGLE_SERVICE_ACCOUNT_KEY) {
-    console.log('🔍 Initializing Google APIs...');
-    auth = new google.auth.GoogleAuth({
-      credentials: JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY),
-      scopes: [
-        "https://www.googleapis.com/auth/documents",
-        "https://www.googleapis.com/auth/drive.file"
-      ],
+  if (process.env.GOOGLE_API_KEY) {
+    console.log('🔍 Initializing Google Docs API with API key...');
+    
+    // Initialize with API key authentication
+    docs = google.docs({ 
+      version: "v1", 
+      auth: process.env.GOOGLE_API_KEY 
     });
-
-    docs = google.docs({ version: "v1", auth });
-    console.log('✅ Google APIs initialized successfully');
+    
+    console.log('✅ Google Docs API initialized successfully with API key');
   } else {
-    console.warn('⚠️ GOOGLE_SERVICE_ACCOUNT_KEY not found - Google Docs disabled');
+    console.warn('⚠️ GOOGLE_API_KEY not found - Google Docs disabled');
   }
 } catch (error) {
   console.error('❌ Failed to initialize Google APIs:', error);
 }
 
 /**
- * Create a Google Doc with client's form data
+ * Create a Google Doc with client's form data using API key
  */
 export async function createClientGoogleDoc(sessionId: string): Promise<{ success: boolean; documentId?: string; documentUrl?: string; error?: string }> {
   try {
     console.log('🔍 Starting Google Doc creation for sessionId:', sessionId);
     
-    // Check if Google APIs are available globally
+    // Check if Google API key is available
+    if (!process.env.GOOGLE_API_KEY) {
+      console.error('❌ GOOGLE_API_KEY not found');
+      return { success: false, error: 'GOOGLE_API_KEY not configured' };
+    }
+
+    // Check if Google APIs are initialized
     if (!docs) {
-      console.warn('❌ Google Docs API not initialized - Google Docs functionality disabled');
+      console.warn('❌ Google Docs API not initialized');
       return { success: false, error: 'Google APIs not configured' };
     }
 
-    // Check environment variable
-    if (!process.env.GOOGLE_SERVICE_ACCOUNT_KEY) {
-      console.error('❌ GOOGLE_SERVICE_ACCOUNT_KEY not found');
-      return { success: false, error: 'GOOGLE_SERVICE_ACCOUNT_KEY not configured' };
-    }
-
-    // Parse credentials with better error handling
-    let credentials;
-    try {
-      credentials = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY);
-      console.log('✅ Service account email:', credentials.client_email);
-      console.log('✅ Project ID:', credentials.project_id);
-    } catch (parseError) {
-      console.error('❌ JSON parse error:', parseError);
-      return { success: false, error: 'Invalid JSON in GOOGLE_SERVICE_ACCOUNT_KEY' };
-    }
-
-    // Initialize Google Auth with more detailed scopes
-    const auth = new google.auth.GoogleAuth({
-      credentials,
-      scopes: [
-        "https://www.googleapis.com/auth/documents",
-        "https://www.googleapis.com/auth/drive.file"  // Minimal drive scope for file creation
-      ],
-    });
-
-    // Test authentication
-    try {
-      const authClient = await auth.getClient();
-      console.log('✅ Auth client created successfully');
-      
-      // Test API access
-      const accessToken = await authClient.getAccessToken();
-      console.log('✅ Access token obtained:', accessToken.token ? 'YES' : 'NO');
-    } catch (authError) {
-      console.error('❌ Auth test failed:', authError);
-      return { success: false, error: `Authentication failed: ${authError instanceof Error ? authError.message : String(authError)}` };
-    }
-
-    const docsClient = google.docs({ version: "v1", auth });
+    console.log('✅ Using API key:', process.env.GOOGLE_API_KEY.substring(0, 10) + '...');
 
     console.log('🔍 Fetching dotaznik data for sessionId:', sessionId);
     
@@ -95,12 +59,12 @@ export async function createClientGoogleDoc(sessionId: string): Promise<{ succes
     }
 
     // Create document title with client email
-    const documentTitle = `Dotazník - ${dotaznikData.email}`;
+    const documentTitle = `Dotazník - ${dotaznikData.email} - ${new Date().toLocaleDateString('cs-CZ')}`;
 
     console.log('🔍 Creating Google Doc with title:', documentTitle);
 
-    // Create a new Google Doc
-    const createResponse = await docsClient.documents.create({
+    // Create a new Google Doc (this will be created in your personal Google Drive)
+    const createResponse = await docs.documents.create({
       requestBody: {
         title: documentTitle,
       },
@@ -119,7 +83,7 @@ export async function createClientGoogleDoc(sessionId: string): Promise<{ succes
     console.log('🔍 Inserting content into document...');
 
     // Insert content into the document
-    await docsClient.documents.batchUpdate({
+    await docs.documents.batchUpdate({
       documentId,
       requestBody: {
         requests: [
