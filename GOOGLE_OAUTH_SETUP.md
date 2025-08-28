@@ -1,6 +1,10 @@
 # Google OAuth2 Setup Guide
 
-## ✅ Kód je připraven!
+##### 4. Přidaj refresh_token do Vercel:
+```
+GOOGLE_REFRESH_TOKEN=your_refresh_token_here
+GOOGLE_DRIVE_FOLDER_ID=your_folder_id_here
+```ód je připraven!
 
 OAuth2 implementace pro Google Docs je hotová. Zde jsou kroky pro získání refresh_token:
 
@@ -17,7 +21,8 @@ git push
 ```
 GOOGLE_CLIENT_ID=your_client_id_from_google_cloud
 GOOGLE_CLIENT_SECRET=your_client_secret_from_google_cloud
-GOOGLE_REDIRECT_URI=https://jidlosmartinem.vercel.app/api/auth/google/callback
+GOOGLE_REDIRECT_URI=https://jidlosmartinem.cz/api/auth/google/callback
+GOOGLE_DRIVE_FOLDER_ID=your_folder_id_here
 ```
 
 ### 3. Získej refresh_token:
@@ -38,7 +43,8 @@ GOOGLE_REFRESH_TOKEN=your_refresh_token_here
 ## 🎯 Co se stane po nastavení:
 
 - ✅ Automatické vytváření Google Docs pro každý dotazník
-- ✅ Dokumenty se vytvoří ve tvém Google Drive
+- ✅ Dokumenty se vytvoří ve tvé specifikované Google Drive složce
+- ✅ Fallback: Pokud není folder ID, dokumenty se vytvoří v root Drive
 - ✅ Dokumenty budou dostupné přes link (anyone with link can view)
 - ✅ Email notifikace budou obsahovat odkazy na dokumenty
 

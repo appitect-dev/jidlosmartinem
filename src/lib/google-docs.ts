@@ -89,19 +89,47 @@ export async function createClientGoogleDoc(sessionId: string): Promise<{ succes
 
     console.log('🔍 Creating Google Doc with title:', documentTitle);
 
-    // Create a new Google Doc (this will be created in your personal Google Drive)
-    const createResponse = await docs.documents.create({
-      requestBody: {
-        title: documentTitle,
-      },
-    });
+    let documentId: string;
 
-    const documentId = createResponse.data.documentId;
-    if (!documentId) {
-      return { success: false, error: 'Failed to create document' };
+    // If we have a folder ID, create the document directly in that folder
+    if (process.env.GOOGLE_DRIVE_FOLDER_ID && drive) {
+      console.log('🔍 Creating document in folder:', process.env.GOOGLE_DRIVE_FOLDER_ID);
+      
+      // Use Drive API to create document in specific folder
+      const driveCreateResponse = await drive.files.create({
+        requestBody: {
+          name: documentTitle,
+          parents: [process.env.GOOGLE_DRIVE_FOLDER_ID],
+          mimeType: 'application/vnd.google-apps.document'
+        }
+      });
+
+      const folderDocumentId = driveCreateResponse.data.id;
+      if (!folderDocumentId) {
+        return { success: false, error: 'Failed to get document ID from Google Drive' };
+      }
+
+      documentId = folderDocumentId;
+      console.log('✅ Document created in folder with ID:', documentId);
+
+    } else {
+      // Fallback: Create in root
+      console.log('🔍 Creating document in root (no folder specified)');
+      
+      const createResponse = await docs.documents.create({
+        requestBody: {
+          title: documentTitle,
+        },
+      });
+
+      const rootDocumentId = createResponse.data.documentId;
+      if (!rootDocumentId) {
+        return { success: false, error: 'Failed to create document' };
+      }
+
+      documentId = rootDocumentId;
+      console.log('✅ Document created with ID:', documentId);
     }
-
-    console.log('✅ Document created with ID:', documentId);
 
     // Generate content for the document
     const documentContent = generateDocumentContent(dotaznikData);
