@@ -236,12 +236,17 @@ export async function POST(request: NextRequest) {
     try {
       // Create Google Doc for the client first
       let googleDocUrl = '';
+      let raynetClientId: number | undefined;
       try {
         console.log(`Creating Google Doc for sessionId: ${sessionId}`);
         const docResult = await createClientGoogleDoc(sessionId);
         if (docResult.success && docResult.documentUrl) {
           googleDocUrl = docResult.documentUrl;
+          raynetClientId = docResult.raynetClientId;
           console.log(`Google Doc created successfully: ${googleDocUrl}`);
+          if (raynetClientId) {
+            console.log(`Raynet client created with ID: ${raynetClientId}`);
+          }
         } else {
           console.error('Failed to create Google Doc:', docResult.error);
         }
@@ -258,7 +263,8 @@ export async function POST(request: NextRequest) {
         eventName: meetingInfo.eventName,
         sessionId,
         dotaznikData,
-        googleDocUrl // Include Google Doc URL if available
+        googleDocUrl, // Include Google Doc URL if available
+        raynetClientId // Include Raynet client ID if available
       });
 
       if (martinResult.success) {

@@ -23,6 +23,7 @@ export interface DotaznikEmailData {
     sessionId: string;
     dotaznikData: NonNullable<DotaznikType>;
     googleDocUrl?: string; // Optional Google Doc URL
+    raynetClientId?: number; // Optional Raynet client ID
 }
 
 /**
@@ -93,7 +94,8 @@ function generateBookingEmailHTML({
                                       eventName,
                                       sessionId,
                                       dotaznikData,
-                                      googleDocUrl
+                                      googleDocUrl,
+                                      raynetClientId
                                   }: DotaznikEmailData): string {
     const formatDate = (dateString: string) => {
         return new Date(dateString).toLocaleString('cs-CZ', {
@@ -111,6 +113,15 @@ function generateBookingEmailHTML({
         <h3>📄 Google Dokument klienta</h3>
         <div class="field"><strong>Odkaz na dokument:</strong> <a href="${googleDocUrl}" target="_blank" style="color: #2E7D32; font-weight: bold;">${googleDocUrl}</a></div>
         <p style="color: #2E7D32; font-weight: bold;">✅ Dokument s kompletními daty dotazníku je připraven pro konzultaci!</p>
+      </div>
+    ` : '';
+
+    const raynetSection = raynetClientId ? `
+      <div class="section" style="background: #E3F2FD; border: 2px solid #2196F3;">
+        <h3>🏢 Raynet CRM</h3>
+        <div class="field"><strong>Client ID:</strong> <span style="color: #1976D2; font-weight: bold;">${raynetClientId}</span></div>
+        <div class="field"><strong>CRM Link:</strong> <a href="https://app.raynet.cz/company/${raynetClientId}" target="_blank" style="color: #1976D2; font-weight: bold;">Otevřít v Raynet CRM</a></div>
+        <p style="color: #1976D2; font-weight: bold;">✅ Klient byl automaticky vytvořen v CRM systému!</p>
       </div>
     ` : '';
 
@@ -144,7 +155,9 @@ function generateBookingEmailHTML({
 
       ${googleDocSection}
 
-      <div class="section">
+      ${raynetSection}
+
+      <div class="section">{
         <h3>📋 Základní informace</h3>
         <div class="field"><strong>Jméno:</strong> ${dotaznikData.jmeno || 'Neuvedeno'}</div>
         <div class="field"><strong>Email:</strong> ${dotaznikData.email || 'Neuvedeno'}</div>
@@ -321,6 +334,7 @@ export async function sendFormSubmissionNotification(clientName: string, clientE
 
     // Create Google Doc for the client
     let googleDocInfo = '';
+    let raynetInfo = '';
     try {
         const docResult = await createClientGoogleDoc(sessionId);
         if (docResult.success && docResult.documentUrl) {
@@ -332,6 +346,19 @@ export async function sendFormSubmissionNotification(clientName: string, clientE
         </div>
         `;
             console.log(`Google Doc created for client ${clientEmail}: ${docResult.documentUrl}`);
+            
+            // Add Raynet info if client was created
+            if (docResult.raynetClientId) {
+                raynetInfo = `
+        <div class="section" style="background: #E3F2FD; padding: 15px; border: 1px solid #2196F3; border-radius: 8px; margin: 20px 0;">
+          <h3>🏢 Raynet CRM klient vytvořen</h3>
+          <div class="field"><strong>Client ID:</strong> ${docResult.raynetClientId}</div>
+          <div class="field"><strong>CRM Link:</strong> <a href="https://app.raynet.cz/company/${docResult.raynetClientId}" target="_blank">Otevřít v Raynet CRM</a></div>
+          <p style="font-size: 14px; color: #666;">Klient byl automaticky vytvořen v CRM systému s odkazem na Google dokument.</p>
+        </div>
+        `;
+                console.log(`Raynet client created for ${clientEmail} with ID: ${docResult.raynetClientId}`);
+            }
         } else {
             console.error('Failed to create Google Doc:', docResult.error);
             googleDocInfo = `
@@ -388,6 +415,8 @@ export async function sendFormSubmissionNotification(clientName: string, clientE
       </div>
 
       ${googleDocInfo}
+
+      ${raynetInfo}
 
       <div class="section basic-info">
         <h3>👤 Základní údaje</h3>

@@ -1,5 +1,6 @@
 import { google } from "googleapis";
 import { prisma } from '@/lib/prisma';
+import { createRaynetClient } from './raynet-crm';
 
 // Get the type from Prisma client
 type DotaznikType = Awaited<ReturnType<typeof prisma.dotaznik.findFirst>>;
@@ -46,7 +47,13 @@ try {
 /**
  * Create a Google Doc with client's form data using OAuth2
  */
-export async function createClientGoogleDoc(sessionId: string): Promise<{ success: boolean; documentId?: string; documentUrl?: string; error?: string }> {
+export async function createClientGoogleDoc(sessionId: string): Promise<{ 
+  success: boolean; 
+  documentId?: string; 
+  documentUrl?: string; 
+  raynetClientId?: number;
+  error?: string 
+}> {
   try {
     console.log('🔍 Starting Google Doc creation for sessionId:', sessionId);
     
@@ -175,10 +182,46 @@ export async function createClientGoogleDoc(sessionId: string): Promise<{ succes
     const documentUrl = `https://docs.google.com/document/d/${documentId}/edit`;
     
     console.log(`✅ Google Doc created successfully: ${documentUrl}`);
+
+    // Create client in Raynet CRM with Google Doc URL
+    let raynetClientId: number | undefined;
+    if (process.env.RAYNET_USERNAME && process.env.RAYNET_API_KEY) {
+      console.log('🔍 Creating client in Raynet CRM...');
+      
+      // Extract first and last name from jmeno field
+      const fullName = dotaznikData.jmeno || '';
+      const nameParts = fullName.trim().split(' ');
+      const firstName = nameParts[0] || '';
+      const lastName = nameParts.slice(1).join(' ') || '';
+
+      try {
+        const raynetResult = await createRaynetClient({
+          firstName,
+          lastName,
+          email: dotaznikData.email || '',
+          googleDocUrl: documentUrl
+        });
+
+        if (raynetResult.success && raynetResult.clientId) {
+          raynetClientId = raynetResult.clientId;
+          console.log('✅ Raynet client created with ID:', raynetClientId);
+        } else {
+          console.warn('⚠️ Failed to create Raynet client:', raynetResult.error);
+          // Continue anyway - Google Doc was created successfully
+        }
+      } catch (raynetError) {
+        console.warn('⚠️ Raynet client creation failed:', raynetError);
+        // Continue anyway - Google Doc was created successfully
+      }
+    } else {
+      console.log('ℹ️ Raynet credentials not configured, skipping CRM integration');
+    }
+    
     return { 
       success: true, 
       documentId, 
-      documentUrl 
+      documentUrl,
+      raynetClientId 
     };
 
   } catch (error) {
