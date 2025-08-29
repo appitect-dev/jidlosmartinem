@@ -120,7 +120,6 @@ function generateBookingEmailHTML({
       <div class="section" style="background: #E3F2FD; border: 2px solid #2196F3;">
         <h3>🏢 Raynet CRM</h3>
         <div class="field"><strong>Client ID:</strong> <span style="color: #1976D2; font-weight: bold;">${raynetClientId}</span></div>
-        <div class="field"><strong>CRM Link:</strong> <a href="https://app.raynet.cz/company/${raynetClientId}" target="_blank" style="color: #1976D2; font-weight: bold;">Otevřít v Raynet CRM</a></div>
         <p style="color: #1976D2; font-weight: bold;">✅ Klient byl automaticky vytvořen v CRM systému!</p>
       </div>
     ` : '';
@@ -353,7 +352,6 @@ export async function sendFormSubmissionNotification(clientName: string, clientE
         <div class="section" style="background: #E3F2FD; padding: 15px; border: 1px solid #2196F3; border-radius: 8px; margin: 20px 0;">
           <h3>🏢 Raynet CRM klient vytvořen</h3>
           <div class="field"><strong>Client ID:</strong> ${docResult.raynetClientId}</div>
-          <div class="field"><strong>CRM Link:</strong> <a href="https://app.raynet.cz/company/${docResult.raynetClientId}" target="_blank">Otevřít v Raynet CRM</a></div>
           <p style="font-size: 14px; color: #666;">Klient byl automaticky vytvořen v CRM systému s odkazem na Google dokument.</p>
         </div>
         `;

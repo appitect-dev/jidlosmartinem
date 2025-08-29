@@ -49,12 +49,20 @@ export async function createRaynetClient({
       name: `${firstName} ${lastName}`,
       firstName: firstName,
       lastName: lastName,
-      email: email,
+      email: email, // keep for compatibility
       person: true,
       state: "A_POTENTIAL",
       rating: "A",
       role: "A_SUBSCRIBER",
-      notice: googleDocUrl
+      notice: googleDocUrl,
+      // Raynet expects contact emails inside addresses[].contactInfo.email
+      addresses: [
+        {
+          contactInfo: {
+            email: email
+          }
+        }
+      ]
     };
 
     console.log('🔍 Sending request to Raynet API...');
