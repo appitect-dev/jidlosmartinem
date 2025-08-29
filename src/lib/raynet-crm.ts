@@ -49,7 +49,6 @@ export async function createRaynetClient({
       name: `${firstName} ${lastName}`,
       firstName: firstName,
       lastName: lastName,
-      email: email, // keep for compatibility
       person: true,
       state: "A_POTENTIAL",
       rating: "A",
@@ -58,6 +57,9 @@ export async function createRaynetClient({
       // Raynet expects contact emails inside addresses[].contactInfo.email
       addresses: [
         {
+          address: {
+            name: "Kontaktní adresa"
+          },
           contactInfo: {
             email: email
           }
