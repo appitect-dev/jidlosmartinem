@@ -40,15 +40,21 @@ export async function createRaynetClient({
       return { success: false, error: 'Raynet credentials not configured' };
     }
 
+    // Ensure we have non-empty firstName and lastName (Raynet requirements)
+    const safeFirstName = firstName.trim() || 'Neznámé';
+    const safeLastName = lastName.trim() || 'Příjmení';
+
+    console.log('🔍 Using safe names:', { safeFirstName, safeLastName });
+
     // Prepare authorization header
     const credentials = `${process.env.RAYNET_USERNAME}:${process.env.RAYNET_API_KEY}`;
     const authHeader = `Basic ${Buffer.from(credentials).toString('base64')}`;
 
     // Prepare request payload
     const payload = {
-      name: `${firstName} ${lastName}`,
-      firstName: firstName,
-      lastName: lastName,
+      name: `${safeFirstName} ${safeLastName}`,
+      firstName: safeFirstName,
+      lastName: safeLastName,
       person: true,
       state: "A_POTENTIAL",
       rating: "A",

@@ -191,8 +191,8 @@ export async function createClientGoogleDoc(sessionId: string): Promise<{
       // Extract first and last name from jmeno field
       const fullName = dotaznikData.jmeno || '';
       const nameParts = fullName.trim().split(' ');
-      const firstName = nameParts[0] || '';
-      const lastName = nameParts.slice(1).join(' ') || '';
+      const firstName = nameParts[0] || 'Neznámé';
+      const lastName = nameParts.slice(1).join(' ') || 'Příjmení'; // Fallback if no last name provided
 
       try {
         const raynetResult = await createRaynetClient({

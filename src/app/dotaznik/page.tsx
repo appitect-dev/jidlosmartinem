@@ -93,6 +93,7 @@ function DotaznikForm() {
 
     const [currentSection, setCurrentSection] = useState(0);
     const [errors, setErrors] = useState<Record<string, string>>({});
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [formData, setFormData] = useState<FormData>({
         jmeno: '', vek: '', vyska: '', hmotnost: '', pohlavi: '', email: '', telefon: '',
         hlavniCil: '', vedlejsiCile: '', terminalCile: '',
@@ -282,6 +283,9 @@ function DotaznikForm() {
     };
 
     const handleSubmit = async () => {
+        if (isSubmitting) return; // Prevent multiple submissions
+        
+        setIsSubmitting(true);
         try {
             console.log('Submitting dotaznik form...');
             
@@ -346,6 +350,7 @@ function DotaznikForm() {
                         setCurrentSection(sectionIndex);
                     }
                 }
+                setIsSubmitting(false);
                 return;
             }
             
@@ -369,10 +374,12 @@ function DotaznikForm() {
                 
                 // You could show an error message to the user here
                 alert(`Chyba při ukládání dotazníku: ${errorData.message || 'Neznámá chyba'}`);
+                setIsSubmitting(false);
             }
         } catch (error) {
             console.error('Chyba při ukládání dotazníku:', error);
             alert('Nepodařilo se uložit dotazník. Zkuste to prosím znovu.');
+            setIsSubmitting(false);
         }
     };
 
@@ -1427,7 +1434,7 @@ Den 1:
                 <div className="flex justify-between">
                     <button
                         onClick={handlePrev}
-                        disabled={currentSection === 0}
+                        disabled={currentSection === 0 || isSubmitting}
                         className="flex items-center px-6 py-3 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                     >
                         <ChevronLeft className="h-5 w-5 mr-2"/>
@@ -1436,10 +1443,24 @@ Den 1:
 
                     <button
                         onClick={handleNext}
-                        className="flex items-center px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
+                        disabled={isSubmitting}
+                        className={`flex items-center px-6 py-3 rounded-lg transition-colors ${
+                            isSubmitting 
+                                ? 'bg-gray-400 text-gray-200 cursor-not-allowed' 
+                                : 'bg-green-500 text-white hover:bg-green-600'
+                        }`}
                     >
-                        {currentSection === sections.length - 1 ? 'Dokončit' : 'Pokračovat'}
-                        <ChevronRight className="h-5 w-5 ml-2"/>
+                        {isSubmitting ? (
+                            <>
+                                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                                Odesílám...
+                            </>
+                        ) : (
+                            <>
+                                {currentSection === sections.length - 1 ? 'Dokončit' : 'Pokračovat'}
+                                <ChevronRight className="h-5 w-5 ml-2"/>
+                            </>
+                        )}
                     </button>
                 </div>
             </div>
