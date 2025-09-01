@@ -45,7 +45,7 @@ export default function About() {
                 <p className="text-lg lg:text-xl text-gray-700 leading-relaxed">
                   Více než{" "}
                   <strong className="text-green-700">
-                    5 let pomáhám lidem, kteří nemají čas na složité jídelníčky
+                    10 let pomáhám lidem, kteří nemají čas na složité jídelníčky
                     a hodiny v posilovně, zhubnout zdravě a udržitelně
                   </strong>
                   .
