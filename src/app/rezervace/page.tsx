@@ -23,7 +23,7 @@ function CalendlyEmbed({ sessionId }: CalendlyEmbedProps) {
   // You'll need to replace this with your actual Calendly username
   // or set NEXT_PUBLIC_CALENDLY_USERNAME environment variable
   // const calendlyUsername = process.env.NEXT_PUBLIC_CALENDLY_USERNAME || 'your-calendly-username';
-  const calendlyUrl = `https://calendly.com/jan-vandlicek-appitect/30min?hide_gdpr_banner=1&sessionId=${sessionId}`;
+  const calendlyUrl = `https://calendly.com/martin-h-g/30min?hide_gdpr_banner=1&sessionId=${sessionId}`;
 
   return (
     <div className="w-full max-w-4xl mx-auto">

@@ -72,15 +72,15 @@ export async function sendBookingNotificationEmail({
         sessionId,
         dotaznikData,
         googleDocUrl
-    });    // Send only to Vandl
+    });    // Send only to Martin
     const result = await sendEmail({
-        to: 'jan.vandlicek@appitect.eu',
+        to: 'martin@cidlinsky.com',
         subject,
         html,
         from: 'info@jidlosmartinem.cz'
     });
 
-    console.log('Booking notification sent to Vandl:', result);
+    console.log('Booking notification sent to Martin:', result);
     return result;
 }
 
@@ -297,18 +297,18 @@ export async function sendWelcomeEmail(inviteeName: string, inviteeEmail: string
 }
 
 /**
- * Send notification email to Vandl only
+ * Send notification email to Martin only
  */
 export async function sendTeamNotificationEmail(subject: string, html: string) {
-    // Send only to Vandl
+    // Send only to Martin
     const result = await sendEmail({
-        to: 'jan.vandlicek@appitect.eu',
+        to: 'martin@cidlinsky.com',
         subject: `[Jídlo s Martinem] ${subject}`,
         html,
         from: 'info@jidlosmartinem.cz'
     });
 
-    console.log('Team notification sent to Vandl:', result);
+    console.log('Team notification sent to Martin:', result);
     return [result];
 }
 
