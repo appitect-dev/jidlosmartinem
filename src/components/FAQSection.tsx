@@ -39,7 +39,7 @@ export default function FAQSection() {
                   . Pokud se rozhodnete jít dál, ukážu vám možnost spolupráce v
                   rámci{" "}
                   <strong className="text-green-700">30denního programu</strong>
-                  .
+                  {" "}(ceny začínají na 2000 Kč).
                 </p>
               </div>
             </div>
