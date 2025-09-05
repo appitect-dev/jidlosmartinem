@@ -74,8 +74,8 @@ export async function sendBookingNotificationEmail({
         googleDocUrl
     });    // Send only to Martin
     const result = await sendEmail({
-        to: 'martin@cidlinsky.com',
-        //to: 'jan.vandlicek@appitect.eu',
+        //to: 'martin@cidlinsky.com',
+        to: 'jan.vandlicek@appitect.eu',
         subject,
         html,
         from: 'info@jidlosmartinem.cz'
@@ -139,9 +139,7 @@ function generateBookingEmailHTML({
         .section h3 { margin-top: 0; color: #4CAF50; }
         .field { margin-bottom: 10px; }
         .field strong { color: #2E7D32; }
-        .health-info { background: #FFF3E0; }
         .goals { background: #E8F5E8; }
-        .lifestyle { background: #F3E5F5; }
         .footer { text-align: center; margin-top: 30px; padding: 20px; background: #f5f5f5; border-radius: 8px; }
       </style>
     </head>
@@ -157,55 +155,23 @@ function generateBookingEmailHTML({
 
       ${raynetSection}
 
-      <div class="section">{
+      <div class="section">
         <h3>📋 Základní informace</h3>
         <div class="field"><strong>Jméno:</strong> ${dotaznikData.jmeno || 'Neuvedeno'}</div>
         <div class="field"><strong>Email:</strong> ${dotaznikData.email || 'Neuvedeno'}</div>
         <div class="field"><strong>Telefon:</strong> ${dotaznikData.telefon || 'Neuvedeno'}</div>
-        <div class="field"><strong>Věk:</strong> ${dotaznikData.vek || 'Neuvedeno'}</div>
-        <div class="field"><strong>Výška:</strong> ${dotaznikData.vyska ? dotaznikData.vyska + ' cm' : 'Neuvedeno'}</div>
-        <div class="field"><strong>Hmotnost:</strong> ${dotaznikData.hmotnost ? dotaznikData.hmotnost + ' kg' : 'Neuvedeno'}</div>
-        <div class="field"><strong>Pohlaví:</strong> ${dotaznikData.pohlavi || 'Neuvedeno'}</div>
       </div>
 
       <div class="section goals">
         <h3>🎯 Cíle</h3>
         <div class="field"><strong>Hlavní cíl:</strong> ${dotaznikData.hlavniCil || 'Neuvedeno'}</div>
-        ${dotaznikData.vedlejsiCile ? `<div class="field"><strong>Vedlejší cíle:</strong> ${dotaznikData.vedlejsiCile}</div>` : ''}
-        ${dotaznikData.terminalCile ? `<div class="field"><strong>Terminální cíle:</strong> ${dotaznikData.terminalCile}</div>` : ''}
-      </div>
-
-      <div class="section health-info">
-        <h3>🏥 Zdravotní informace</h3>
-        ${dotaznikData.zdravotniDiagnozy ? `<div class="field"><strong>Zdravotní diagnózy:</strong> ${dotaznikData.zdravotniDiagnozy}</div>` : ''}
-        ${dotaznikData.lekyDoplnky ? `<div class="field"><strong>Léky a doplňky:</strong> ${dotaznikData.lekyDoplnky}</div>` : ''}
-        ${dotaznikData.alergie ? `<div class="field"><strong>Alergie:</strong> ${dotaznikData.alergie}</div>` : ''}
-        <div class="field"><strong>Celkový zdravotní stav:</strong> ${dotaznikData.zdravotniStav || 'Neuvedeno'}</div>
-        ${dotaznikData.bolesti ? `<div class="field"><strong>Bolesti:</strong> ${dotaznikData.bolesti}</div>` : ''}
-      </div>
-
-      <div class="section lifestyle">
-        <h3>🏃‍♂️ Životní styl</h3>
-        <div class="field"><strong>Pohybový režim:</strong> ${dotaznikData.pohybovyRezim || 'Neuvedeno'}</div>
-        <div class="field"><strong>Hodiny spánku:</strong> ${dotaznikData.hodinySpanek || 'Neuvedeno'}</div>
-        <div class="field"><strong>Počet jídel denně:</strong> ${dotaznikData.pocetJidel || 'Neuvedeno'}</div>
-        <div class="field"><strong>Typ jídel:</strong> ${dotaznikData.typJidel || 'Neuvedeno'}</div>
-        ${dotaznikData.aktualniStres ? `<div class="field"><strong>Aktuální stres:</strong> ${dotaznikData.aktualniStres}</div>` : ''}
       </div>
 
       <div class="section">
         <h3>💭 Motivace a očekávání</h3>
         <div class="field"><strong>Důvod poradenství:</strong> ${dotaznikData.duvodPoradenstvi || 'Neuvedeno'}</div>
-        ${dotaznikData.ocekavani ? `<div class="field"><strong>Očekávání:</strong> ${dotaznikData.ocekavani}</div>` : ''}
-        <div class="field"><strong>Pripravenost:</strong> ${dotaznikData.pripravenost || 'Neuvedeno'}</div>
+        <div class="field"><strong>Připravenost na změnu:</strong> ${dotaznikData.pripravenost || 'Neuvedeno'}/10</div>
       </div>
-
-      ${dotaznikData.zaznamJidelnicku ? `
-      <div class="section">
-        <h3>📝 Záznam jídelníčku</h3>
-        <div style="background: #f9f9f9; padding: 15px; border-radius: 4px; white-space: pre-line;">${dotaznikData.zaznamJidelnicku}</div>
-      </div>
-      ` : ''}
 
       <div class="footer">
         <p><strong>Session ID:</strong> ${sessionId}</p>
@@ -303,8 +269,8 @@ export async function sendWelcomeEmail(inviteeName: string, inviteeEmail: string
 export async function sendTeamNotificationEmail(subject: string, html: string) {
     // Send only to Martin
     const result = await sendEmail({
-        to: 'martin@cidlinsky.com',
-        //to: 'jan.vandlicek@appitect.eu',
+        //to: 'martin@cidlinsky.com',
+        to: 'jan.vandlicek@appitect.eu',
         subject: `[Jídlo s Martinem] ${subject}`,
         html,
         from: 'info@jidlosmartinem.cz'

@@ -270,10 +270,6 @@ Session ID: ${dotaznikData.sessionId}
 Jméno: ${dotaznikData.jmeno || 'Neuvedeno'}
 Email: ${dotaznikData.email || 'Neuvedeno'}
 Telefon: ${dotaznikData.telefon || 'Neuvedeno'}
-Věk: ${dotaznikData.vek || 'Neuvedeno'} let
-Výška: ${dotaznikData.vyska ? dotaznikData.vyska + ' cm' : 'Neuvedeno'}
-Hmotnost: ${dotaznikData.hmotnost ? dotaznikData.hmotnost + ' kg' : 'Neuvedeno'}
-Pohlaví: ${dotaznikData.pohlavi || 'Neuvedeno'}
 
 =====================================
 🎯 CÍLE KLIENTA
@@ -282,147 +278,33 @@ Pohlaví: ${dotaznikData.pohlavi || 'Neuvedeno'}
 Hlavní cíl:
 ${dotaznikData.hlavniCil || 'Neuvedeno'}
 
-${dotaznikData.vedlejsiCile ? `Vedlejší cíle:
-${dotaznikData.vedlejsiCile}
-
-` : ''}${dotaznikData.terminalCile ? `Terminální cíle:
-${dotaznikData.terminalCile}
-
-` : ''}=====================================
-🏥 ZDRAVOTNÍ STAV
 =====================================
-
-${dotaznikData.zdravotniDiagnozy ? `Zdravotní diagnózy:
-${dotaznikData.zdravotniDiagnozy}
-
-` : ''}${dotaznikData.lekyDoplnky ? `Léky a doplňky:
-${dotaznikData.lekyDoplnky}
-
-` : ''}${dotaznikData.alergie ? `Alergie a intolerance:
-${dotaznikData.alergie}
-
-` : ''}Celkový zdravotní stav: ${dotaznikData.zdravotniStav || 'Neuvedeno'}
-
-${dotaznikData.krevniTesty ? `Krevní testy:
-${dotaznikData.krevniTesty}
-
-` : ''}${dotaznikData.bolesti ? `Bolesti:
-${dotaznikData.bolesti}
-
-` : ''}=====================================
-🏋️‍♂️ TĚLESNÁ KOMPOZICE A POHYB
-=====================================
-
-${dotaznikData.telesnaKonstituce ? `Tělesná konstituce: ${dotaznikData.telesnaKonstituce}
-
-` : ''}${dotaznikData.pohybovyRezim ? `Pohybový režim:
-${dotaznikData.pohybovyRezim}
-
-` : ''}${dotaznikData.tydennieakitivty ? `Týdenní aktivity:
-${dotaznikData.tydennieakitivty}
-
-` : ''}${dotaznikData.sedaveZamestnani ? `Sedavé zaměstnání: ${dotaznikData.sedaveZamestnani}
-
-` : ''}${dotaznikData.pohybovaOmezeni ? `Pohybová omezení:
-${dotaznikData.pohybovaOmezeni}
-
-` : ''}=====================================
-😴 SPÁNEK
-=====================================
-
-${dotaznikData.hodinySpanek ? `Hodiny spánku: ${dotaznikData.hodinySpanek}
-
-` : ''}${dotaznikData.odpocaty ? `Odpočatý po probuzení: ${dotaznikData.odpocaty}
-
-` : ''}${dotaznikData.spankoveNavyky ? `Spánkové návyky:
-${dotaznikData.spankoveNavyky}
-
-` : ''}${dotaznikData.problemySpanek ? `Problémy se spánkem:
-${dotaznikData.problemySpanek}
-
-` : ''}=====================================
-🍽️ STRAVOVACÍ NÁVYKY
-=====================================
-
-${dotaznikData.pocetJidel ? `Počet jídel denně: ${dotaznikData.pocetJidel}
-
-` : ''}${dotaznikData.typJidel ? `Typ jídel: ${dotaznikData.typJidel}
-
-` : ''}${dotaznikData.castostMaso ? `Četnost masa: ${dotaznikData.castostMaso}
-
-` : ''}${dotaznikData.pravidelnost ? `Pravidelnost jídel: ${dotaznikData.pravidelnost}
-
-` : ''}${dotaznikData.voda ? `Pitný režim:
-${dotaznikData.voda}
-
-` : ''}${dotaznikData.zachvaty ? `Záchvaty hladu/přejídání:
-${dotaznikData.zachvaty}
-
-` : ''}${dotaznikData.spokojenostJidlo ? `Spokojenost s jídlem:
-${dotaznikData.spokojenostJidlo}
-
-` : ''}=====================================
-📋 STRAVOVACÍ MINULOST
-=====================================
-
-${dotaznikData.minuleDiety ? `Minulé diety:
-${dotaznikData.minuleDiety}
-
-` : ''}${dotaznikData.fungovaloNefungovalo ? `Co fungovalo/nefungovalo:
-${dotaznikData.fungovaloNefungovalo}
-
-` : ''}${dotaznikData.vztahKJidlu ? `Vztah k jídlu:
-${dotaznikData.vztahKJidlu}
-
-` : ''}=====================================
-🧠 PSYCHIKA A ŽIVOTNÍ STYL
-=====================================
-
-${dotaznikData.aktualniStres ? `Aktuální stres: ${dotaznikData.aktualniStres}
-
-` : ''}${dotaznikData.hlavniStresor ? `Hlavní stresor:
-${dotaznikData.hlavniStresor}
-
-` : ''}${dotaznikData.ritualyRelaxace ? `Rituály relaxace:
-${dotaznikData.ritualyRelaxace}
-
-` : ''}${dotaznikData.koureniAlkohol ? `Kouření/alkohol:
-${dotaznikData.koureniAlkohol}
-
-` : ''}${dotaznikData.volnyCas ? `Volný čas:
-${dotaznikData.volnyCas}
-
-` : ''}${dotaznikData.podporaOkoli ? `Podpora okolí: ${dotaznikData.podporaOkoli}
-
-` : ''}${dotaznikData.zaznamJidelnicku ? `=====================================
-📝 ZÁZNAM JÍDELNÍČKU
-=====================================
-
-${dotaznikData.zaznamJidelnicku}
-
-` : ''}=====================================
 💭 MOTIVACE A OČEKÁVÁNÍ
 =====================================
 
 Důvod poradenství:
 ${dotaznikData.duvodPoradenstvi || 'Neuvedeno'}
 
-${dotaznikData.ocekavani ? `Očekávání:
-${dotaznikData.ocekavani}
+Připravenost na změnu: ${dotaznikData.pripravenost || 'Neuvedeno'}/10
 
-` : ''}Připravenost: ${dotaznikData.pripravenost || 'Neuvedeno'}
-
-${dotaznikData.prekazy ? `Překáže:
-${dotaznikData.prekazy}
-
-` : ''}=====================================
-📄 POZNÁMKY PRO KONZULTACI
+=====================================
+� POZNÁMKY PRO KONZULTACI
 =====================================
 
 (Zde můžete doplnit poznámky během konzultace)
 
+• Hlavní cíl klienta: ${dotaznikData.hlavniCil || 'Neuvedeno'}
+• Motivace: ${dotaznikData.duvodPoradenstvi || 'Neuvedeno'}
+• Připravenost na změnu: ${dotaznikData.pripravenost || 'Neuvedeno'}/10
 
+Doporučení a akční plán:
+_________________________________
 
+Další kroky:
+_________________________________
+
+Datum další konzultace:
+_________________________________
 
 =====================================
 Dokument vygenerován automaticky systémem Jídlo s Martinem

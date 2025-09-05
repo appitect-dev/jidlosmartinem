@@ -3,73 +3,19 @@ import { randomUUID } from 'crypto';
 import { saveDotaznik, CreateDotaznikData } from '@/lib/queries';
 import { sendEmail, sendFormSubmissionNotification } from '@/lib/email';
 
-// Type definition for the form data
+// Type definition for the simplified form data
 interface DotaznikFormData {
   // Základní údaje
   jmeno: string;
-  vek: string;
-  vyska: string;
-  hmotnost: string;
-  pohlavi: string;
   email: string;
   telefon: string;
 
   // Cíl klienta
   hlavniCil: string;
-  vedlejsiCile: string;
-  terminalCile: string;
-
-  // Zdravotní stav
-  zdravotniDiagnozy: string;
-  lekyDoplnky: string;
-  alergie: string;
-  zdravotniStav: string;
-  krevniTesty: string;
-  bolesti: string;
-
-  // Tělesná kompozice
-  telesnaKonstituce: string;
-  pohybovyRezim: string;
-  tydennieakitivty: string;
-  sedaveZamestnani: string;
-  pohybovaOmezeni: string;
-
-  // Spánek
-  hodinySpanek: string;
-  odpocaty: string;
-  spankoveNavyky: string;
-  problemySpanek: string;
-
-  // Stravovací návyky
-  pocetJidel: string;
-  typJidel: string;
-  castostMaso: string;
-  pravidelnost: string;
-  voda: string;
-  zachvaty: string;
-  spokojenostJidlo: string;
-
-  // Stravovací minulost
-  minuleDiety: string;
-  fungovaloNefungovalo: string;
-  vztahKJidlu: string;
-
-  // Psychika a životní styl
-  aktualniStres: string;
-  hlavniStresor: string;
-  ritualyRelaxace: string;
-  koureniAlkohol: string;
-  volnyCas: string;
-  podporaOkoli: string;
-
-  // Záznam jídelníčku
-  zaznamJidelnicku: string;
 
   // Motivace a očekávání
   duvodPoradenstvi: string;
-  ocekavani: string;
   pripravenost: string;
-  prekazy: string;
 }
 
 // In-memory storage for development - replace with actual database
@@ -77,55 +23,16 @@ interface DotaznikFormData {
 
 // Mock function to save dotaznik data - replace with your actual database implementation
 async function saveDotaznikData(sessionId: string, formData: DotaznikFormData) {
-  // Convert string values to integers for numeric fields
+  // Convert simplified form data to database format
   const numericData: CreateDotaznikData = {
     sessionId,
     jmeno: formData.jmeno,
     email: formData.email,
-    vek: formData.vek ? parseInt(formData.vek) : undefined,
-    vyska: formData.vyska ? parseInt(formData.vyska) : undefined,
-    hmotnost: formData.hmotnost ? parseInt(formData.hmotnost) : undefined,
-    pohlavi: formData.pohlavi || undefined,
     telefon: formData.telefon || undefined,
     hlavniCil: formData.hlavniCil || undefined,
-    vedlejsiCile: formData.vedlejsiCile || undefined,
-    terminalCile: formData.terminalCile || undefined,
-    zdravotniDiagnozy: formData.zdravotniDiagnozy || undefined,
-    lekyDoplnky: formData.lekyDoplnky || undefined,
-    alergie: formData.alergie || undefined,
-    zdravotniStav: formData.zdravotniStav || undefined,
-    krevniTesty: formData.krevniTesty || undefined,
-    bolesti: formData.bolesti || undefined,
-    telesnaKonstituce: formData.telesnaKonstituce || undefined,
-    pohybovyRezim: formData.pohybovyRezim || undefined,
-    tydennieakitivty: formData.tydennieakitivty || undefined,
-    sedaveZamestnani: formData.sedaveZamestnani || undefined,
-    pohybovaOmezeni: formData.pohybovaOmezeni || undefined,
-    hodinySpanek: formData.hodinySpanek || undefined,
-    odpocaty: formData.odpocaty || undefined,
-    spankoveNavyky: formData.spankoveNavyky || undefined,
-    problemySpanek: formData.problemySpanek || undefined,
-    pocetJidel: formData.pocetJidel || undefined,
-    typJidel: formData.typJidel || undefined,
-    castostMaso: formData.castostMaso || undefined,
-    pravidelnost: formData.pravidelnost || undefined,
-    voda: formData.voda || undefined,
-    zachvaty: formData.zachvaty || undefined,
-    spokojenostJidlo: formData.spokojenostJidlo || undefined,
-    minuleDiety: formData.minuleDiety || undefined,
-    fungovaloNefungovalo: formData.fungovaloNefungovalo || undefined,
-    vztahKJidlu: formData.vztahKJidlu || undefined,
-    aktualniStres: formData.aktualniStres || undefined,
-    hlavniStresor: formData.hlavniStresor || undefined,
-    ritualyRelaxace: formData.ritualyRelaxace || undefined,
-    koureniAlkohol: formData.koureniAlkohol || undefined,
-    volnyCas: formData.volnyCas || undefined,
-    podporaOkoli: formData.podporaOkoli || undefined,
-    zaznamJidelnicku: formData.zaznamJidelnicku || undefined,
     duvodPoradenstvi: formData.duvodPoradenstvi || undefined,
-    ocekavani: formData.ocekavani || undefined,
     pripravenost: formData.pripravenost || undefined,
-    prekazy: formData.prekazy || undefined,
+    // All other fields will be undefined/null since they're not in the simplified form
   };
 
   // Save to database using Prisma
@@ -138,17 +45,13 @@ async function saveDotaznikData(sessionId: string, formData: DotaznikFormData) {
 function validateFormData(data: Partial<DotaznikFormData>): { isValid: boolean; errors: string[] } {
   const errors: string[] = [];
   
-  // Required fields validation
+  // Required fields validation - simplified to only 6 fields
   const requiredFields = [
     { field: 'jmeno' as keyof DotaznikFormData, name: 'Jméno' },
     { field: 'email' as keyof DotaznikFormData, name: 'Email' },
-    { field: 'vek' as keyof DotaznikFormData, name: 'Věk' },
-    { field: 'vyska' as keyof DotaznikFormData, name: 'Výška' },
-    { field: 'hmotnost' as keyof DotaznikFormData, name: 'Hmotnost' },
-    { field: 'pohlavi' as keyof DotaznikFormData, name: 'Pohlaví' },
+    { field: 'telefon' as keyof DotaznikFormData, name: 'Telefon' },
     { field: 'hlavniCil' as keyof DotaznikFormData, name: 'Hlavní cíl' },
     { field: 'duvodPoradenstvi' as keyof DotaznikFormData, name: 'Důvod poradenství' },
-    { field: 'ocekavani' as keyof DotaznikFormData, name: 'Očekávání' },
     { field: 'pripravenost' as keyof DotaznikFormData, name: 'Připravenost' }
   ];
   
@@ -164,19 +67,9 @@ function validateFormData(data: Partial<DotaznikFormData>): { isValid: boolean; 
     errors.push('Neplatný email formát');
   }
   
-  // Age validation
-  if (data.vek && (isNaN(Number(data.vek)) || parseInt(data.vek) < 1 || parseInt(data.vek) > 120)) {
-    errors.push('Věk musí být číslo mezi 1 a 120');
-  }
-  
-  // Height validation
-  if (data.vyska && (isNaN(Number(data.vyska)) || parseInt(data.vyska) < 50 || parseInt(data.vyska) > 250)) {
-    errors.push('Výška musí být číslo mezi 50 a 250 cm');
-  }
-  
-  // Weight validation
-  if (data.hmotnost && (isNaN(Number(data.hmotnost)) || parseInt(data.hmotnost) < 20 || parseInt(data.hmotnost) > 300)) {
-    errors.push('Hmotnost musí být číslo mezi 20 a 300 kg');
+  // Pripravenost validation (should be 0-10)
+  if (data.pripravenost && (isNaN(Number(data.pripravenost)) || parseInt(data.pripravenost) < 0 || parseInt(data.pripravenost) > 10)) {
+    errors.push('Připravenost musí být číslo mezi 0 a 10');
   }
   
   return {
