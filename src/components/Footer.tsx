@@ -39,12 +39,12 @@ export default function Footer() {
             <div className="space-y-3">
               <div className="flex items-center space-x-3 text-gray-600">
                 <Mail className="w-5 h-5 text-green-600" />
-                <span>martin@vyzivovaporadna.cz</span>
+                <span>martin@cidlinsky.com</span>
               </div>
-              <div className="flex items-center space-x-3 text-gray-600">
-                <Phone className="w-5 h-5 text-green-600" />
-                <span>+420 777 123 456</span>
-              </div>
+              {/*<div className="flex items-center space-x-3 text-gray-600">*/}
+              {/*  <Phone className="w-5 h-5 text-green-600" />*/}
+              {/*  <span>+420 777 123 456</span>*/}
+              {/*</div>*/}
               <div className="flex items-center space-x-3 text-gray-600">
                 <MapPin className="w-5 h-5 text-green-600" />
                 <span>Praha, Česká republika</span>
