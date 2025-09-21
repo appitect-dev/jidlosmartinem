@@ -17,32 +17,32 @@ export default function About() {
 
           {/* Profile Card */}
           <div className="bg-white rounded-2xl p-8 lg:p-12 shadow-lg border border-gray-200">
-            <div className="flex flex-col lg:flex-row items-center lg:items-start space-y-8 lg:space-y-0 lg:space-x-12">
+            <div className="flex flex-col items-center space-y-8">
               {/* Profile Image */}
-              <div className="relative flex-shrink-0">
-                <div className="w-32 h-32 lg:w-40 lg:h-40 rounded-full overflow-hidden shadow-xl border-4 border-green-200">
+              <div className="relative w-full max-w-2xl">
+                <div className="w-full overflow-hidden rounded-2xl shadow-xl">
                   <Image
-                    src="/me.png"
+                    src="/kdojsem.jpg"
                     alt="Martin Cidlinský - Certifikovaný výživový poradce"
-                    width={160}
-                    height={160}
-                    className="w-full h-full object-cover"
+                    width={800}
+                    height={500}
+                    className="w-full h-auto object-cover"
                   />
                 </div>
-                <div className="absolute -bottom-2 -right-2 w-12 h-12 bg-green-600 rounded-full flex items-center justify-center shadow-lg">
-                  <Award className="w-6 h-6 text-white" />
+                <div className="absolute -bottom-4 -right-4 w-16 h-16 bg-green-600 rounded-full flex items-center justify-center shadow-lg">
+                  <Award className="w-8 h-8 text-white" />
                 </div>
               </div>
 
               {/* Name and Title */}
-              <div className="text-center lg:text-left flex-grow">
+              <div className="text-center">
                 <h3 className="text-3xl lg:text-4xl font-black text-gray-900 mb-3">
                   Martin Cidlinský
                 </h3>
                 <p className="text-green-700 font-bold text-xl mb-6">
                   Certifikovaný výživový poradce
                 </p>
-                <p className="text-lg lg:text-xl text-gray-700 leading-relaxed">
+                <p className="text-lg lg:text-xl text-gray-700 leading-relaxed max-w-3xl">
                   Více než{" "}
                   <strong className="text-green-700">
                     10 let pomáhám lidem, kteří nemají čas na složité jídelníčky
