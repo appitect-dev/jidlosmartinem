@@ -131,9 +131,21 @@ export default function Footer() {
 
         {/* Bottom Bar */}
         <div className="mt-16 pt-8 border-t border-gray-300">
-          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0 text-center">
             <div className="text-gray-500 text-sm">
               © 2025 Martin Cidlinský. Všechna práva vyhrazena.
+            </div>
+            <div className="text-gray-500 text-sm">
+              Webové stránky vytvořila společnost{" "}
+              <a
+                target="_blank"
+                className="underline font-bold"
+                rel="noopener noreferrer"
+                href="https://www.appitect.eu"
+              >
+                Appitect
+              </a>
+              .
             </div>
             <div className="flex space-x-6 text-sm">
               <Link
