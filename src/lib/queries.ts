@@ -70,6 +70,7 @@ export async function saveDotaznik(data: CreateDotaznikData) {
                 hlavniCil: data.hlavniCil,
                 vedlejsiCile: data.vedlejsiCile,
                 terminalCile: data.terminalCile,
+                investice: data.investice,
                 zdravotniDiagnozy: data.zdravotniDiagnozy,
                 lekyDoplnky: data.lekyDoplnky,
                 alergie: data.alergie,
