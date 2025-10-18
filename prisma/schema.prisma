@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,76 +8,57 @@ datasource db {
 }
 
 model Dotaznik {
-  id        String   @id @default(cuid())
-  sessionId String   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  // Základní údaje
-  jmeno     String
-  email     String
-  vek       Int?
-  vyska     Int?
-  hmotnost  Int?
-  pohlavi   String?
-  telefon   String?
-
-  // Cíl klienta
-  hlavniCil     String?
-  vedlejsiCile  String?
-  terminalCile  String?
-
-  // Zdravotní stav
-  zdravotniDiagnozy String?
-  lekyDoplnky       String?
-  alergie           String?
-  zdravotniStav     String?
-  krevniTesty       String?
-  bolesti           String?
-
-  // Tělesná kompozice
-  telesnaKonstituce String?
-  pohybovyRezim     String?
-  tydennieakitivty  String?
-  sedaveZamestnani  String?
-  pohybovaOmezeni   String?
-
-  // Spánek
-  hodinySpanek   String?
-  odpocaty       String?
-  spankoveNavyky String?
-  problemySpanek String?
-
-  // Stravovací návyky
-  pocetJidel        String?
-  typJidel          String?
-  castostMaso       String?
-  pravidelnost      String?
-  voda              String?
-  zachvaty          String?
-  spokojenostJidlo  String?
-
-  // Stravovací minulost
-  minuleDiety            String?
-  fungovaloNefungovalo   String?
-  vztahKJidlu            String?
-
-  // Psychika a životní styl
-  aktualniStres    String?
-  hlavniStresor    String?
-  ritualyRelaxace  String?
-  koureniAlkohol   String?
-  volnyCas         String?
-  podporaOkoli     String?
-
-  // Záznam jídelníčku
-  zaznamJidelnicku String?
-
-  // Motivace a očekávání
-  duvodPoradenstvi String?
-  ocekavani        String?
-  pripravenost     String?
-  prekazy          String?
+  id                   String   @id @default(cuid())
+  sessionId            String   @unique
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  jmeno                String
+  email                String
+  vek                  Int?
+  vyska                Int?
+  hmotnost             Int?
+  pohlavi              String?
+  telefon              String?
+  hlavniCil            String?
+  vedlejsiCile         String?
+  terminalCile         String?
+  investice            String?
+  zdravotniDiagnozy    String?
+  lekyDoplnky          String?
+  alergie              String?
+  zdravotniStav        String?
+  krevniTesty          String?
+  bolesti              String?
+  telesnaKonstituce    String?
+  pohybovyRezim        String?
+  tydennieakitivty     String?
+  sedaveZamestnani     String?
+  pohybovaOmezeni      String?
+  hodinySpanek         String?
+  odpocaty             String?
+  spankoveNavyky       String?
+  problemySpanek       String?
+  pocetJidel           String?
+  typJidel             String?
+  castostMaso          String?
+  pravidelnost         String?
+  voda                 String?
+  zachvaty             String?
+  spokojenostJidlo     String?
+  minuleDiety          String?
+  fungovaloNefungovalo String?
+  vztahKJidlu          String?
+  aktualniStres        String?
+  hlavniStresor        String?
+  ritualyRelaxace      String?
+  koureniAlkohol       String?
+  volnyCas             String?
+  podporaOkoli         String?
+  zaznamJidelnicku     String?
+  duvodPoradenstvi     String?
+  ocekavani            String?
+  pripravenost         String?
+  prekazy              String?
 
   @@map("dotaznik")
 }

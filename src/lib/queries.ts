@@ -13,6 +13,7 @@ export interface CreateDotaznikData {
     hlavniCil?: string;
     vedlejsiCile?: string;
     terminalCile?: string;
+    investice?: string;
     zdravotniDiagnozy?: string;
     lekyDoplnky?: string;
     alergie?: string;

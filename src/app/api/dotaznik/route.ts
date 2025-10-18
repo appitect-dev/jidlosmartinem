@@ -13,6 +13,9 @@ interface DotaznikFormData {
   // Cíl klienta
   hlavniCil: string;
 
+  // Investice
+  investice: string;
+
   // Motivace a očekávání
   duvodPoradenstvi: string;
   pripravenost: string;
@@ -30,6 +33,7 @@ async function saveDotaznikData(sessionId: string, formData: DotaznikFormData) {
     email: formData.email,
     telefon: formData.telefon || undefined,
     hlavniCil: formData.hlavniCil || undefined,
+    investice: formData.investice || undefined,
     duvodPoradenstvi: formData.duvodPoradenstvi || undefined,
     pripravenost: formData.pripravenost || undefined,
     // All other fields will be undefined/null since they're not in the simplified form
@@ -45,12 +49,13 @@ async function saveDotaznikData(sessionId: string, formData: DotaznikFormData) {
 function validateFormData(data: Partial<DotaznikFormData>): { isValid: boolean; errors: string[] } {
   const errors: string[] = [];
   
-  // Required fields validation - simplified to only 6 fields
+  // Required fields validation - simplified to only 7 fields
   const requiredFields = [
     { field: 'jmeno' as keyof DotaznikFormData, name: 'Jméno' },
     { field: 'email' as keyof DotaznikFormData, name: 'Email' },
     { field: 'telefon' as keyof DotaznikFormData, name: 'Telefon' },
     { field: 'hlavniCil' as keyof DotaznikFormData, name: 'Hlavní cíl' },
+    { field: 'investice' as keyof DotaznikFormData, name: 'Investice' },
     { field: 'duvodPoradenstvi' as keyof DotaznikFormData, name: 'Důvod poradenství' },
     { field: 'pripravenost' as keyof DotaznikFormData, name: 'Připravenost' }
   ];

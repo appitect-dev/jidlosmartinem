@@ -279,7 +279,13 @@ Hlavní cíl:
 ${dotaznikData.hlavniCil || 'Neuvedeno'}
 
 =====================================
-💭 MOTIVACE A OČEKÁVÁNÍ
+� INVESTICE DO ZMĚNY
+=====================================
+
+Připravenost investovat: ${dotaznikData.investice === 'min_2000' ? 'Méně než 2 000 Kč' : dotaznikData.investice === 'vice_2000' ? 'Více než 2 000 Kč' : 'Neuvedeno'}
+
+=====================================
+�💭 MOTIVACE A OČEKÁVÁNÍ
 =====================================
 
 Důvod poradenství:

@@ -14,6 +14,9 @@ interface FormData {
     // Cíl klienta
     hlavniCil: string;
     
+    // Investice
+    investice: string;
+    
     // Motivace
     duvodPoradenstvi: string;
     pripravenost: string;
@@ -22,6 +25,7 @@ interface FormData {
 const sections = [
     {title: 'Základní údaje', id: 'zakladni'},
     {title: 'Cíl klienta', id: 'cil'},
+    {title: 'Investice', id: 'investice'},
     {title: 'Motivace', id: 'motivace'},
     {title: 'Shrnutí', id: 'shrnuti'}
 ];
@@ -38,6 +42,7 @@ function DotaznikForm() {
         email: '',
         telefon: '',
         hlavniCil: '',
+        investice: '',
         duvodPoradenstvi: '',
         pripravenost: ''
     });
@@ -46,6 +51,7 @@ function DotaznikForm() {
     const requiredFields = {
         zakladni: ['jmeno', 'email', 'telefon'],
         cil: ['hlavniCil'],
+        investice: ['investice'],
         motivace: ['duvodPoradenstvi', 'pripravenost'],
         shrnuti: []
     };
@@ -297,6 +303,18 @@ function DotaznikForm() {
                     </div>
                 );
 
+            case 'investice':
+                return (
+                    <div className="space-y-6">
+                        <h3 className="text-2xl font-bold text-gray-900 mb-6">💰 Investice do vaší změny</h3>
+                        <p className="text-gray-600 mb-6">Abychom vás mohli správně zařadit do vhodného programu, potřebujeme vědět, jakou částkou jste ochotni investovat do vaší promeny.</p>
+                        {renderSelectField('investice', 'Jakou maximální částku jste ochotni investovat?', [
+                            { value: 'min_2000', label: 'Méně než 2 000 Kč' },
+                            { value: 'vice_2000', label: 'Více než 2 000 Kč' }
+                        ], true)}
+                    </div>
+                );
+
             case 'motivace':
                 return (
                     <div className="space-y-6">
@@ -336,6 +354,14 @@ function DotaznikForm() {
                                 <h4 className="font-semibold text-gray-900 mb-3">🎯 Váš cíl</h4>
                                 <div className="text-sm space-y-2 text-gray-900">
                                     <div><strong>Hlavní cíl:</strong> {formData.hlavniCil}</div>
+                                </div>
+                            </div>
+
+                            {/* Investice */}
+                            <div className="bg-gray-50 p-6 rounded-lg">
+                                <h4 className="font-semibold text-gray-900 mb-3">💰 Investice</h4>
+                                <div className="text-sm space-y-2 text-gray-900">
+                                    <div><strong>Připravenost investovat:</strong> {formData.investice === 'min_2000' ? 'Méně než 2 000 Kč' : 'Více než 2 000 Kč'}</div>
                                 </div>
                             </div>
 
