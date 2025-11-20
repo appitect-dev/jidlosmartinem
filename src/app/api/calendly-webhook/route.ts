@@ -152,9 +152,9 @@ function extractSessionIdFromEvent(event: CalendlyEvent): string | null {
     return null;
   } catch (error) {
     console.error('Error extracting sessionId:', error);
-    await sendDiscordAlert(
+    sendDiscordAlert(
       `SessionId extraction failed:\n${error instanceof Error ? error.message : error}`
-    );
+    ).catch(console.error);
     return null;
   }
 }
