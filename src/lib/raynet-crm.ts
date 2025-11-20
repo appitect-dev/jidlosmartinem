@@ -1,3 +1,5 @@
+import { sendDiscordAlert } from './alerts';
+
 // Raynet API configuration
 const RAYNET_API_BASE = 'https://app.raynet.cz/api/v2';
 const RAYNET_INSTANCE = 'recima';
@@ -125,6 +127,10 @@ export async function createRaynetClient({
       error: error
     });
 
+    await sendDiscordAlert(
+      `Raynet client creation failed:\n${error instanceof Error ? error.message : error}`
+    );
+
     return {
       success: false,
       error: `Raynet client creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`
@@ -166,6 +172,9 @@ export async function testRaynetConnection(): Promise<{ success: boolean; error?
 
   } catch (error) {
     console.error('💥 Raynet connection test failed:', error);
+    await sendDiscordAlert(
+      `Raynet connection test failed:\n${error instanceof Error ? error.message : error}`
+    );
     return {
       success: false,
       error: `Connection test failed: ${error instanceof Error ? error.message : 'Unknown error'}`

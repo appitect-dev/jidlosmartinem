@@ -1,6 +1,7 @@
 import { google } from "googleapis";
 import { prisma } from '@/lib/prisma';
 import { createRaynetClient } from './raynet-crm';
+import { sendDiscordAlert } from './alerts';
 
 // Get the type from Prisma client
 type DotaznikType = Awaited<ReturnType<typeof prisma.dotaznik.findFirst>>;
@@ -42,6 +43,9 @@ try {
   }
 } catch (error) {
   console.error('❌ Failed to initialize Google APIs:', error);
+  sendDiscordAlert(
+    `Google APIs init failed:\n${error instanceof Error ? error.message : error}`
+  ).catch(console.error);
 }
 
 /**
@@ -234,6 +238,10 @@ export async function createClientGoogleDoc(sessionId: string): Promise<{
       statusText: (error as Record<string, unknown>).statusText,
       error: error
     });
+    
+    await sendDiscordAlert(
+      `Google Docs creation failed:\n${error instanceof Error ? error.message : error}`
+    );
     
     return { 
       success: false, 

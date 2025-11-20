@@ -1,6 +1,7 @@
 import {Resend} from 'resend';
 import {prisma} from '@/lib/prisma';
 import { createClientGoogleDoc } from '@/lib/google-docs';
+import {sendDiscordAlert} from './alerts';
 
 // Get the type from Prisma client
 type DotaznikType = Awaited<ReturnType<typeof prisma.dotaznik.findFirst>>;

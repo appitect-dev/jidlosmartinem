@@ -1,4 +1,5 @@
 import {prisma} from './prisma';
+import {sendDiscordAlert} from './alerts';
 
 // Define the data structure for creating a dotaznik entry
 export interface CreateDotaznikData {
@@ -114,6 +115,9 @@ export async function saveDotaznik(data: CreateDotaznikData) {
         return result;
     } catch (error) {
         console.error('Error saving dotaznik:', error);
+        await sendDiscordAlert(
+            `Dotaznik save failed:\n${error instanceof Error ? error.message : error}`
+        );
         throw new Error('Failed to save dotaznik data');
     }
 }
@@ -132,6 +136,9 @@ export async function getDotaznikBySessionId(sessionId: string) {
         return dotaznik;
     } catch (error) {
         console.error('Error fetching dotaznik:', error);
+        await sendDiscordAlert(
+            `Dotaznik fetch failed:\n${error instanceof Error ? error.message : error}`
+        );
         return null;
     }
 }

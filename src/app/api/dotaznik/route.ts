@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { randomUUID } from 'crypto';
 import { saveDotaznik, CreateDotaznikData } from '@/lib/queries';
 import { sendEmail, sendFormSubmissionNotification } from '@/lib/email';
+import { sendDiscordAlert } from '@/lib/alerts';
 
 // Type definition for the simplified form data
 interface DotaznikFormData {

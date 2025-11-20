@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getDotaznikBySessionId } from '@/lib/queries';
 import { sendBookingNotificationEmail, sendWelcomeEmail } from '@/lib/email';
 import { createClientGoogleDoc } from '@/lib/google-docs';
+import { sendDiscordAlert } from '@/lib/alerts';
 
 // Type definitions for Calendly webhook payload
 interface CalendlyInvitee {
@@ -151,6 +152,9 @@ function extractSessionIdFromEvent(event: CalendlyEvent): string | null {
     return null;
   } catch (error) {
     console.error('Error extracting sessionId:', error);
+    await sendDiscordAlert(
+      `SessionId extraction failed:\n${error instanceof Error ? error.message : error}`
+    );
     return null;
   }
 }
@@ -227,6 +231,9 @@ export async function POST(request: NextRequest) {
       }
     } catch (error) {
       console.error('Error fetching dotaznik data:', error);
+      await sendDiscordAlert(
+        `Dotaznik fetch in webhook failed:\n${error instanceof Error ? error.message : error}`
+      );
       return NextResponse.json({ 
         error: 'Failed to fetch client data' 
       }, { status: 500 });
@@ -288,6 +295,9 @@ export async function POST(request: NextRequest) {
 
     } catch (error) {
       console.error('Error sending emails:', error);
+      await sendDiscordAlert(
+        `Email sending in webhook failed:\n${error instanceof Error ? error.message : error}`
+      );
       // Don't fail the webhook if email fails, just log it
     }
 
@@ -303,6 +313,9 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error('Error processing Calendly webhook:', error);
+    await sendDiscordAlert(
+      `Calendly webhook processing failed:\n${error instanceof Error ? error.message : error}`
+    );
     
     return NextResponse.json({
       error: 'Internal server error',
