@@ -21,11 +21,10 @@ export async function GET() {
     const res = await oauth2Client.getAccessToken();
 
     const expiresIn = res.res?.data?.expires_in ?? 0;
-    const expiresInMinutes = Math.floor(expiresIn / 60);
 
     // ✅ Success alert to Discord
     await sendDiscordAlert(
-      `💚 **Google Keep-Alive Success**\nAccess token refreshed successfully.\nExpires in: ${expiresInMinutes} minutes (${expiresIn}s)`
+      `💚 **Google Keep-Alive Success**\nAccess token refreshed successfully.`
     );
 
     return NextResponse.json({
