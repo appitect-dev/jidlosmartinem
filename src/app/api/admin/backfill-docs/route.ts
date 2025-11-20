@@ -24,10 +24,16 @@ export async function POST(req: Request) {
     const body = await req.json().catch(() => ({}));
     const { sessionIds, limit } = body as { sessionIds?: string[]; limit?: number };
 
-    // Build query
-    const query: { sessionId?: { in: string[] } } = sessionIds && sessionIds.length > 0
-      ? { sessionId: { in: sessionIds } }
-      : {};
+    // Build query - only records from 2025-10-26 onwards
+    const cutoffDate = new Date('2025-10-26T00:00:00Z');
+    
+    const query: { 
+      sessionId?: { in: string[] };
+      createdAt: { gte: Date };
+    } = {
+      createdAt: { gte: cutoffDate },
+      ...(sessionIds && sessionIds.length > 0 ? { sessionId: { in: sessionIds } } : {})
+    };
 
     // Fetch records to backfill
     const records = await prisma.dotaznik.findMany({
